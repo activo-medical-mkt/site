@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+
+# Core crawl budget controls
+Crawl-delay: 2
+
+# AI crawlers (optional explicit allow)
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+Sitemap: https://activomedical.com/sitemap.xml
