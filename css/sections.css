@@ -170,7 +170,7 @@
   filter: blur(72px); opacity: .55;
 }
 .orb-teal  { width: 520px; height: 520px; top: -120px; left: -80px;  background: radial-gradient(circle, rgba(0,127,151,.6), transparent 70%); }
-.orb-indigo { width: 400px; height: 400px; top: 40px;  right: -60px; background: radial-gradient(circle, rgba(76,63,119,.65), transparent 70%); }
+.orb-indigo { width: 400px; height: 400px; top: 40px;  right: -60px; background: radial-gradient(circle, rgba(85,51,255,.45), transparent 70%); }
 .orb-mauve  { width: 300px; height: 300px; bottom: 60px; left: 30%; background: radial-gradient(circle, rgba(124,88,127,.45), transparent 70%); }
 
 .hero-grid {

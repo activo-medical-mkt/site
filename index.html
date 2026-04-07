@@ -3,16 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Activo Medical Marketing | Agencia de Marketing para Médicos</title>
+  <title>Agencia de Marketing para Médicos | Activo Medical Marketing</title>
   <meta name="description" content="Agencia de marketing digital para médicos, clínicas y especialistas. Estrategias comprobadas de publicidad en salud, SEO y captación de pacientes.">
   <meta name="theme-color" content="#051126">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Activo Medical Marketing | Agencia de Marketing para Médicos">
+  <meta property="og:title" content="Agencia de Marketing para Médicos | Activo Medical Marketing">
   <meta property="og:description" content="Marketing digital médico ético y rentable para clínicas y consultorios privados.">
   <meta property="og:locale" content="es_MX">
   <meta property="og:url" content="https://activomedical.com/">
   <link rel="canonical" href="https://activomedical.com/">
-  <link rel="icon" href="Assets/icon-white.png" type="image/png">
+  <link rel="icon" href="Assets/Logos/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="Assets/Logos/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="Assets/Logos/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="Assets/Logos/favicon-96x96.png">
+  <link rel="shortcut icon" href="Assets/Logos/favicon.ico">
 
   <link rel="preload" href="Assets/Fonts/MavenPro-Regular.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="Assets/Fonts/MavenPro-Bold.ttf" as="font" type="font/ttf" crossorigin>
@@ -114,8 +118,9 @@
       <!-- Video background -->
       <div class="hero-video-wrap" aria-hidden="true">
         <video class="hero-video-frame" id="hero-vid"
-          src="Assets/videoplayback.mp4#t=78"
-          autoplay muted loop playsinline
+          src="Assets/videoplayback.mp4"
+          data-start-time="78"
+          muted loop playsinline
           disablepictureinpicture
           preload="metadata">
         </video>
@@ -567,6 +572,17 @@
       </div>
     </section>
 
+    <!-- Interlink to Tijuana landing page -->
+    <div style="background:linear-gradient(90deg,#f7f9fc 0%,#eef2f7 100%);border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;padding-block:1.1rem;">
+      <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;">
+        <p style="font-size:.88rem;color:#64748b;margin:0;"><strong style="color:#1e293b;">Presencia en Baja California</strong> &mdash; Estrategias especializadas para cl&iacute;nicas y especialistas en la frontera M&eacute;xico-EE.&nbsp;UU.</p>
+        <a href="/marketing-medico-tijuana" style="display:inline-flex;align-items:center;gap:.45rem;font-size:.85rem;font-weight:700;color:#007f97;text-decoration:none;white-space:nowrap;" title="Marketing m&eacute;dico en Tijuana">
+          <strong>Marketing m&eacute;dico en Tijuana</strong>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+
     <!-- ==============================  CTA FINAL — gradient dark  ================================ -->
     <section class="section section-cta" id="contacto" data-nav-theme="light">
       <div class="cta-orbs" aria-hidden="true">
@@ -734,10 +750,77 @@
       if (hv) obs.observe(hv);
     })();
 
-    // ---- Hero video: skip segment 2:36–3:15 (156s–195s) ----
+    // ---- Hero video: deterministic start + skip segment 2:36–3:15 (156s–195s) ----
     (function() {
       var v = document.getElementById('hero-vid');
       if (!v) return;
+
+      var startTime = Number(v.getAttribute('data-start-time')) || 0;
+      var hasStarted = false;
+      var startRetries = 0;
+      var maxStartRetries = 6;
+
+      function getSafeStart() {
+        if (!isFinite(v.duration) || v.duration <= 0) return 0;
+        return Math.max(0, Math.min(startTime, Math.max(0, v.duration - 0.1)));
+      }
+
+      function beginPlaybackFromStart() {
+        if (hasStarted) return;
+        hasStarted = true;
+
+        var playPromise = v.play();
+        if (playPromise && typeof playPromise.then === 'function') {
+          playPromise.catch(function() {
+            // Retry once user-agent policies are satisfied.
+            hasStarted = false;
+          });
+        }
+      }
+
+      function seekThenPlay() {
+        if (hasStarted) return;
+
+        var safeStart = getSafeStart();
+        if (safeStart <= 0 && startTime > 0 && startRetries < maxStartRetries) {
+          startRetries += 1;
+          setTimeout(seekThenPlay, 120);
+          return;
+        }
+
+        function onSeeked() {
+          v.removeEventListener('seeked', onSeeked);
+          beginPlaybackFromStart();
+        }
+
+        v.addEventListener('seeked', onSeeked);
+        try {
+          v.currentTime = safeStart;
+        } catch (e) {
+          v.removeEventListener('seeked', onSeeked);
+          beginPlaybackFromStart();
+          return;
+        }
+
+        // Fallback for browsers that do not emit seeked reliably.
+        setTimeout(function() {
+          if (!hasStarted) {
+            v.removeEventListener('seeked', onSeeked);
+            beginPlaybackFromStart();
+          }
+        }, 250);
+      }
+
+      // Production/CDN environments may ignore media fragments; force deterministic seek-before-play.
+      v.addEventListener('loadedmetadata', seekThenPlay);
+      v.addEventListener('canplay', seekThenPlay);
+      v.addEventListener('loadeddata', seekThenPlay);
+
+      // If paused by browser policy, re-attempt when page becomes active.
+      document.addEventListener('visibilitychange', function() {
+        if (!document.hidden && v.paused) seekThenPlay();
+      });
+
       v.addEventListener('timeupdate', function() {
         if (v.currentTime >= 156 && v.currentTime < 195) { v.currentTime = 195; }
       });
