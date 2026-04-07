@@ -107,7 +107,7 @@
           src="Assets/videoplayback.mp4#t=78"
           autoplay muted loop playsinline
           disablepictureinpicture
-          preload="auto">
+          preload="metadata">
         </video>
         <div class="hero-video-overlay"></div>
       </div>
@@ -475,7 +475,7 @@
             <div class="portfolio-track">
               <article class="portfolio-slide glass-dark">
                 <div class="portfolio-visual" aria-hidden="true">
-                  <img class="slide-desktop" src="Assets/Portfolio/grandviewhealthparters-desktop.png" alt="Proyecto web cl&iacute;nica quiropr&aacute;ctica" loading="lazy" decoding="async">
+                  <img class="slide-desktop" src="Assets/Portfolio/grandviewhealthparters-desktop.png" alt="Proyecto web cl&iacute;nica quiropr&aacute;ctica" loading="lazy" decoding="async" width="1440" height="900">
                   <img class="slide-mobile" src="Assets/Portfolio/grandviewhealthparters-mobile.png" alt="Vista m&oacute;vil proyecto quiropr&aacute;ctica" loading="lazy" decoding="async">
                 </div>
                 <div class="portfolio-case">
@@ -486,7 +486,7 @@
 
               <article class="portfolio-slide glass-dark">
                 <div class="portfolio-visual" aria-hidden="true">
-                  <img class="slide-desktop" src="Assets/Portfolio/GDL-desktop.png" alt="Proyecto web cl&iacute;nica en Guadalajara" loading="lazy" decoding="async">
+                  <img class="slide-desktop" src="Assets/Portfolio/GDL-desktop.png" alt="Proyecto web cl&iacute;nica en Guadalajara" loading="lazy" decoding="async" width="1440" height="900">
                   <img class="slide-mobile" src="Assets/Portfolio/GDL-mobile.png" alt="Vista m&oacute;vil proyecto Guadalajara" loading="lazy" decoding="async">
                 </div>
                 <div class="portfolio-case">
@@ -497,7 +497,7 @@
 
               <article class="portfolio-slide glass-dark">
                 <div class="portfolio-visual" aria-hidden="true">
-                  <img class="slide-desktop" src="Assets/Portfolio/tijuana-desktop.png" alt="Proyecto web pr&aacute;ctica m&eacute;dica en Tijuana" loading="lazy" decoding="async">
+                  <img class="slide-desktop" src="Assets/Portfolio/tijuana-desktop.png" alt="Proyecto web pr&aacute;ctica m&eacute;dica en Tijuana" loading="lazy" decoding="async" width="1440" height="900">
                   <img class="slide-mobile" src="Assets/Portfolio/tijuana-mobile.png" alt="Vista m&oacute;vil proyecto Tijuana" loading="lazy" decoding="async">
                 </div>
                 <div class="portfolio-case">
@@ -839,7 +839,7 @@
     document.getElementById('fyear').textContent = new Date().getFullYear();
 
     // ---- Specialty auto-slider ----
-    (function() {
+    function initSpecialtySlider() {
       var slider = document.querySelector('.specialty-window');
       var track  = document.querySelector('.specialty-track');
       var dotsEl = document.querySelector('.specialty-dots');
@@ -920,10 +920,23 @@
       setWidths();
       goTo(0, false);
       start();
+    }
+
+    // Initialize specialty slider only when visible to reduce startup work.
+    (function() {
+      var section = document.querySelector('.section-specialties');
+      if (!section) return;
+      var obs = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting) {
+          obs.disconnect();
+          initSpecialtySlider();
+        }
+      }, { threshold: 0.15 });
+      obs.observe(section);
     })();
 
     // ---- Portfolio slider (1 proyecto visible por vez) ----
-    (function() {
+    function initPortfolioSlider() {
       var windowEl = document.querySelector('.portfolio-window');
       var track = document.querySelector('.portfolio-track');
       if (!windowEl || !track) return;
@@ -965,6 +978,19 @@
       setWidths();
       goTo(0, false);
       start();
+    }
+
+    // Initialize portfolio slider only when visible to reduce startup work.
+    (function() {
+      var section = document.querySelector('.section-portfolio');
+      if (!section) return;
+      var obs = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting) {
+          obs.disconnect();
+          initPortfolioSlider();
+        }
+      }, { threshold: 0.15 });
+      obs.observe(section);
     })();
 
     // ---- Mobile nav toggle ----
