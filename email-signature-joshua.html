@@ -1,40 +1,69 @@
 <!doctype html>
-<html lang="en">
-  <body style="margin:0;padding:24px;background:#f3f6fb;">
-    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:560px;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;background:#ffffff;border:1px solid #dbe4f0;border-radius:16px;overflow:hidden;">
+<html lang="es">
+  <body style="margin:0;padding:32px;background:#eef2f7;">
+
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0"
+           style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.12);">
+
+      <!-- Teal top accent bar -->
       <tr>
-        <td style="background:linear-gradient(135deg,#051126 0%,#0d2347 60%,#5533ff 100%);padding:16px 20px;">
-          <img src="https://activomedical.com/Assets/Logos/logo-white.png" width="128" alt="Activo Medical Marketing" style="display:block;border:0;outline:none;text-decoration:none;max-width:128px;height:auto;">
-        </td>
+        <td style="height:4px;background:linear-gradient(90deg,#007f97,#00b4d8);font-size:0;line-height:0;">&nbsp;</td>
       </tr>
 
+      <!-- Main row: photo | left border | text -->
       <tr>
-        <td style="padding:18px 20px 14px 20px;">
-          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+        <td style="padding:22px 26px 22px;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0">
             <tr>
-              <td valign="top" width="110" style="padding-right:14px;">
-                <img src="https://activomedical.com/Assets/profile.png" width="96" height="96" alt="Joshua Ramirez" style="display:block;border:3px solid #5533ff;border-radius:50%;object-fit:cover;">
-              </td>
-              <td valign="top" style="padding-top:2px;">
-                <div style="font-size:24px;line-height:1.1;font-weight:800;color:#051126;letter-spacing:.2px;">Joshua Ramirez</div>
-                <div style="margin-top:6px;display:inline-block;background:rgba(85,51,255,0.12);border:1px solid rgba(85,51,255,0.35);border-radius:999px;padding:6px 10px;font-size:12px;line-height:1;color:#2a1a70;font-weight:700;text-transform:uppercase;letter-spacing:.6px;">Experto en Marketing Digital Certificado</div>
 
-                <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:12px;">
+              <!-- Photo -->
+              <td valign="top" style="padding-right:18px;">
+                <img src="https://activomedical.com/Assets/profile.png"
+                     width="92" alt="Joshua Ramirez"
+                     style="display:block;width:92px;height:92px;border-radius:50%;object-fit:cover;border:3px solid #007f97;">
+              </td>
+
+              <!-- Left teal rule REMOVED -->
+
+              <!-- Text block -->
+              <td valign="middle" style="padding-left:4px;">
+
+                <div style="font-size:22px;font-weight:800;color:#0d1f3c;line-height:1.1;margin-bottom:3px;letter-spacing:-.3px;">Joshua Ramirez</div>
+                <div style="font-size:12.5px;color:#007f97;font-weight:600;text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;">Director de Marketing Médico</div>
+
+                <!-- Contact rows using table for icon + text alignment -->
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+
+                  <!-- Email -->
                   <tr>
-                    <td style="font-size:14px;line-height:1.5;color:#374a63;padding-bottom:2px;">
-                      <a href="mailto:hello@activomedical.com" style="color:#007f97;text-decoration:none;font-weight:700;">hello@activomedical.com</a>
+                    <td valign="middle" style="padding-right:7px;padding-bottom:6px;line-height:0;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#007f97" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                    </td>
+                    <td valign="middle" style="font-size:13px;color:#3d4f63;padding-bottom:6px;white-space:nowrap;">
+                      <a href="mailto:hello@activomedical.com" style="color:#3d4f63;text-decoration:none;">hello@activomedical.com</a>
                     </td>
                   </tr>
+
+                  <!-- WhatsApp -->
                   <tr>
-                    <td style="font-size:13px;line-height:1.5;color:#6a7f97;padding-bottom:2px;">
-                      <a href="https://api.whatsapp.com/send?phone=526647149135" style="color:#6a7f97;text-decoration:none;">WhatsApp: +52 664 714 9135</a>
+                    <td valign="middle" style="padding-right:7px;padding-bottom:6px;line-height:0;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" style="display:block;" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                    </td>
+                    <td valign="middle" style="font-size:13px;color:#3d4f63;padding-bottom:6px;white-space:nowrap;">
+                      <a href="https://api.whatsapp.com/send?phone=526647149135" style="color:#3d4f63;text-decoration:none;">+52 664 714 9135</a>
                     </td>
                   </tr>
+
+                  <!-- Website -->
                   <tr>
-                    <td style="font-size:13px;line-height:1.5;color:#6a7f97;">
-                      <a href="https://activomedical.com" style="color:#6a7f97;text-decoration:none;">activomedical.com</a>
+                    <td valign="middle" style="padding-right:7px;line-height:0;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#007f97" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    </td>
+                    <td valign="middle" style="font-size:13px;white-space:nowrap;">
+                      <a href="https://activomedical.com" style="color:#007f97;text-decoration:none;font-weight:700;">www.activomedical.com</a>
                     </td>
                   </tr>
+
                 </table>
               </td>
             </tr>
@@ -42,17 +71,16 @@
         </td>
       </tr>
 
+      <!-- Footer: logo aligned left on subtle bg -->
       <tr>
-        <td style="padding:0 20px 18px 20px;">
-          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-top:1px solid #e6edf7;">
-            <tr>
-              <td style="padding-top:12px;font-size:12px;line-height:1.45;color:#7d90a8;">
-                Activo Medical Marketing | Estrategias digitales para medicos, clinicas y especialistas.
-              </td>
-            </tr>
-          </table>
+        <td style="background:#f4f7fb;padding:11px 26px;border-top:1px solid #e4eaf4;">
+          <img src="https://activomedical.com/Assets/Logos/logo-white.png"
+               width="108" alt="Activo Medical Marketing"
+               style="display:block;border:0;filter:invert(37%) sepia(90%) saturate(400%) hue-rotate(160deg) brightness(80%);">
         </td>
       </tr>
+
     </table>
+
   </body>
 </html>
