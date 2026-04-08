@@ -166,6 +166,21 @@ h3 { font-size: clamp(1.05rem, 1.8vw, 1.35rem); }
   margin-bottom: 1.1rem;
 }
 
+.kicker-hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .35rem .85rem .35rem .65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(0,0,0,0.38);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+  letter-spacing: .06em;
+}
+
 /* ---- Buttons ---- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
@@ -179,6 +194,13 @@ h3 { font-size: clamp(1.05rem, 1.8vw, 1.35rem); }
   transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
 }
 .btn:hover { transform: translateY(-2px); }
+
+.btn.has-icon { gap: .5rem; }
+.btn.has-icon .btn-icon {
+  width: 1.05em;
+  height: 1.05em;
+  flex-shrink: 0;
+}
 
 .btn-primary {
   background: linear-gradient(130deg, #007f97 0%, #00c4d4 100%);
