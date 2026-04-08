@@ -119,7 +119,6 @@
       <div class="hero-video-wrap" aria-hidden="true">
         <video class="hero-video-frame" id="hero-vid"
           src="Assets/videoplayback.mp4"
-          data-start-time="78"
           muted loop playsinline
           disablepictureinpicture
           preload="metadata">
@@ -750,12 +749,12 @@
       if (hv) obs.observe(hv);
     })();
 
-    // ---- Hero video: deterministic start + skip segment 2:36–3:15 (156s–195s) ----
+    // ---- Hero video: skip segment 1:18–1:57 in trimmed file (78s–117s) ----
     (function() {
       var v = document.getElementById('hero-vid');
       if (!v) return;
 
-      var startTime = Number(v.getAttribute('data-start-time')) || 0;
+      var startTime = 0;
       var hasStarted = false;
       var startRetries = 0;
       var maxStartRetries = 6;
@@ -822,7 +821,7 @@
       });
 
       v.addEventListener('timeupdate', function() {
-        if (v.currentTime >= 156 && v.currentTime < 195) { v.currentTime = 195; }
+        if (v.currentTime >= 78 && v.currentTime < 117) { v.currentTime = 117; }
       });
     })();
 
