@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Marketing para Cirujanos Plásticos en Tijuana | Activo Medical Marketing</title>
-  <meta name="description" content="Agencia especializada en marketing digital para cirujanos plásticos y clínicas de estética en Tijuana. SEO bilingüe, Google Ads certificados y captación de pacientes de California listos para consultar.">
+  <meta name="description" content="Agencia especializada en marketing digital para cirujanos plásticos en Tijuana. SEO bilingüe (rinoplastia Tijuana, plastic surgery Tijuana), Google Ads certificados y captación de pacientes de California.">
   <meta name="theme-color" content="#051126">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Marketing para Cirujanos Plásticos en Tijuana | Activo Medical Marketing">
@@ -16,6 +16,9 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://activomedical.com/Assets/Images/agencia%20de%20marketing%20para%20profesionales%20de%20la%20salud.jpg">
   <link rel="canonical" href="https://activomedical.com/marketing-cirujanos-plasticos-tijuana/">
+  <link rel="alternate" hreflang="es" href="https://activomedical.com/marketing-cirujanos-plasticos-tijuana/">
+  <link rel="alternate" hreflang="es-MX" href="https://activomedical.com/marketing-cirujanos-plasticos-tijuana/">
+  <link rel="alternate" hreflang="x-default" href="https://activomedical.com/marketing-cirujanos-plasticos-tijuana/">
   <link rel="icon" href="../Assets/Logos/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="../Assets/Logos/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="48x48" href="../Assets/Logos/favicon-48x48.png">
@@ -170,20 +173,21 @@
       border-radius: 50%;
       background: radial-gradient(circle, rgba(124,88,127,.10) 0%, transparent 70%);
     }
-    /* Two-column wrapper */
+    /* Hero body — only holds the copy, sits above the absolute image */
     .ps-hero-body {
       flex: 1;
       position: relative;
       z-index: 1;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
       max-width: 1320px;
       width: 100%;
       margin-inline: auto;
       padding-inline: clamp(1rem, 4vw, 4rem);
+      display: flex;
+      align-items: center;
     }
-    /* Left column: copy */
+    /* Left copy — constrained to left 50% */
     .ps-hero-copy {
+      width: 50%;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
@@ -196,6 +200,7 @@
       color: #fff;
       margin-bottom: 1.25rem;
       line-height: 1.06;
+      white-space: nowrap;
     }
     .ps-hero-copy h1 em {
       font-style: normal;
@@ -204,12 +209,15 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    /* Right column: photo with gradient blends */
+    /* Right image — absolute on the section, bleeds to right viewport edge */
     .ps-hero-visual {
-      position: relative;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 55vw;
+      z-index: 0;
       overflow: hidden;
-      /* extend to the viewport right edge */
-      margin-right: calc(-1 * clamp(1rem, 4vw, 4rem));
     }
     .ps-hero-visual-img {
       position: absolute;
@@ -217,9 +225,9 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: center top;
+      object-position: center center;
     }
-    /* Left-edge blend — image dissolves into the navy on the copy side */
+    /* Left-edge blend — smooth fade from navy into the photo */
     .ps-hero-visual::before {
       content: '';
       position: absolute;
@@ -227,10 +235,10 @@
       z-index: 1;
       background: linear-gradient(
         to right,
-        rgba(5,17,38,1)    0%,
-        rgba(5,17,38,0.72) 14%,
-        rgba(5,17,38,0.22) 38%,
-        rgba(5,17,38,0)    62%
+        rgba(5,17,38,1)   0%,
+        rgba(5,17,38,0.9) 8%,
+        rgba(5,17,38,0.5) 28%,
+        rgba(5,17,38,0)   52%
       );
     }
     /* Top + bottom vignette */
@@ -241,10 +249,10 @@
       z-index: 1;
       background: linear-gradient(
         to bottom,
-        rgba(5,17,38,0.72) 0%,
-        transparent 18%,
-        transparent 65%,
-        rgba(5,17,38,0.90) 100%
+        rgba(5,17,38,0.65) 0%,
+        transparent 15%,
+        transparent 70%,
+        rgba(5,17,38,0.85) 100%
       );
     }
     .ps-hero-lead {
@@ -363,23 +371,48 @@
     .stat-pill span { font-size: .75rem; color: rgba(255,255,255,0.5); }
 
     /* ===== CHALLENGE ===== */
-    .section-challenge-ps { background: #f7f5f2; }
+    .section-challenge-ps {
+      position: relative;
+      overflow: hidden;
+      background: #071628;
+    }
+    /* Photo layer */
+    .section-challenge-ps::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('https://images.unsplash.com/photo-1559757148-5c350d0d3c56?auto=format&fit=crop&w=1600&q=85') center/cover no-repeat;
+      opacity: 0.18;
+      pointer-events: none;
+    }
+    /* Colour tone + right-side glow */
+    .section-challenge-ps::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(140deg, rgba(5,17,38,0.93) 0%, rgba(5,17,38,0.78) 55%, rgba(5,17,38,0.88) 100%),
+        radial-gradient(ellipse 70% 80% at 100% 50%, rgba(76,63,119,0.30) 0%, transparent 70%);
+      pointer-events: none;
+    }
     .challenge-ps-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 4rem;
       align-items: start;
+      position: relative;
+      z-index: 1;
     }
-    .challenge-ps-grid h2 { color: var(--c-navy); }
-    .challenge-body { color: var(--c-text); line-height: 1.75; margin-bottom: 1.25rem; }
+    .challenge-ps-grid h2 { color: #fff; }
+    .challenge-body { color: rgba(255,255,255,0.70); line-height: 1.75; margin-bottom: 1.25rem; }
 
     /* ===== INSIGHT SLIDER ===== */
     .insight-slider {
       background: #fff;
-      border: 1px solid var(--c-border);
+      border: 1px solid rgba(255,255,255,0.18);
       border-radius: var(--r-lg);
       overflow: hidden;
-      box-shadow: var(--sh-card);
+      box-shadow: 0 28px 72px rgba(0,0,0,0.50), 0 4px 16px rgba(0,0,0,0.25);
       display: flex;
       flex-direction: column;
       height: 100%;
@@ -464,58 +497,99 @@
       border-radius: 50%;
       background: radial-gradient(circle, rgba(0,127,151,.18) 0%, transparent 70%);
     }
-    .service-ps-grid {
+    /* Bento layout: featured left, animated ticker right */
+    .service-ps-bento {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 1.2rem;
       margin-top: 3rem;
+      align-items: stretch;
     }
-    .service-ps-card {
+    /* Featured left card */
+    .service-ps-featured {
+      background: linear-gradient(150deg, rgba(0,127,151,0.30) 0%, rgba(76,63,119,0.30) 50%, rgba(255,255,255,0.06) 100%);
+      border: 1px solid rgba(0,127,151,0.45);
+      border-radius: var(--r-lg);
+      padding: 2.4rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+      position: relative;
+      overflow: clip;
+      transition: transform .22s, box-shadow .22s;
+    }
+    .service-ps-featured:hover { transform: translateY(-4px); box-shadow: 0 18px 50px rgba(5,17,38,0.35); }
+    .service-ps-featured h3 {
+      color: #fff;
+      font-size: clamp(1.15rem, 1.7vw, 1.5rem);
+      margin-bottom: .4rem;
+    }
+    .service-ps-featured p { color: rgba(255,255,255,0.64); font-size: 1rem; line-height: 1.65; flex: 1; }
+    .service-ps-featured::after {
+      content: "SEO";
+      position: absolute; bottom: -.5rem; right: 1rem;
+      font-family: "FF Mark Pro", "Maven Pro", sans-serif;
+      font-size: 6.5rem; font-weight: 900; line-height: 1;
+      color: rgba(255,255,255,0.035);
+      letter-spacing: -.04em;
+      pointer-events: none; user-select: none;
+    }
+    .featured-badge-ps {
+      display: inline-block;
+      font-size: .7rem; font-weight: 700;
+      letter-spacing: .07em; text-transform: uppercase;
+      background: linear-gradient(130deg, var(--c-teal), var(--c-indigo));
+      color: #fff;
+      padding: .22rem .65rem;
+      border-radius: var(--r-pill);
+      width: fit-content;
+      margin-bottom: .25rem;
+    }
+    /* Right column: ticker */
+    .service-ps-ticker-wrap {
+      overflow: hidden;
+      height: calc(220px * 2 + 20px);
+    }
+    .service-ps-ticker {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      will-change: transform;
+    }
+    .service-ps-small {
+      flex: 0 0 220px;
+      height: 220px;
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: var(--r-lg);
-      padding: 2rem;
-      transition: background .22s, border-color .22s, transform .22s;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: .55rem;
       backdrop-filter: blur(10px);
+      overflow: hidden;
+      transition: background .22s, border-color .22s;
     }
-    .service-ps-card:hover {
+    .service-ps-small:hover {
       background: rgba(255,255,255,0.08);
       border-color: rgba(0,196,212,0.35);
-      transform: translateY(-4px);
     }
-    .service-ps-card.featured-ps {
-      border-color: rgba(124,88,127,0.45);
-      background: linear-gradient(135deg, rgba(0,127,151,.12) 0%, rgba(124,88,127,.18) 100%);
-      box-shadow: 0 0 0 1px rgba(124,88,127,.18), 0 12px 32px rgba(124,88,127,.14);
-    }
+    .service-ps-small h3 { color: #fff; font-size: .98rem; line-height: 1.35; margin: 0; }
+    .service-ps-small p  { color: rgba(255,255,255,.6); font-size: .84rem; line-height: 1.58; flex: 1; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; margin: 0; }
     .service-ps-icon {
-      width: 48px; height: 48px;
+      width: 44px; height: 44px;
       background: rgba(0,196,212,0.12);
       border-radius: var(--r-sm);
       display: flex; align-items: center; justify-content: center;
       color: #00c4d4;
-      margin-bottom: 1.25rem;
+      flex-shrink: 0;
     }
-    .service-ps-card h3 { color: #fff; font-size: 1.05rem; margin-bottom: .65rem; }
-    .service-ps-card p  { color: rgba(255,255,255,.6); font-size: .9rem; line-height: 1.65; margin-bottom: 1rem; }
-    .chip-link-light { color: #00c4d4; font-size: .85rem; font-weight: 700; text-decoration: none; }
+    .service-ps-featured .service-ps-icon { width: 64px; height: 64px; margin-bottom: .25rem; }
+    .chip-link-light { color: #00c4d4; font-size: .85rem; font-weight: 700; text-decoration: none; margin-top: auto; }
     .chip-link-light:hover { text-decoration: underline; }
-    .featured-badge-ps {
-      display: inline-block;
-      font-size: .7rem;
-      font-weight: 700;
-      letter-spacing: .07em;
-      text-transform: uppercase;
-      background: rgba(124,88,127,.18);
-      color: #d4a0e0;
-      border: 1px solid rgba(124,88,127,.40);
-      padding: .2rem .65rem;
-      border-radius: var(--r-pill);
-      margin-bottom: .75rem;
-    }
 
     /* ===== AUTHORITY ===== */
-    .section-authority-ps { background: #edf4f4; }
+    .section-authority-ps { background: #edf5f5; }
     .authority-ps-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -538,7 +612,9 @@
     .authority-point h4 { margin: 0 0 .25rem; color: var(--c-navy); font-size: .98rem; }
     .authority-point p  { font-size: .88rem; color: var(--c-text); line-height: 1.6; }
     .authority-card-ps {
-      background: var(--c-navy);
+      background:
+        linear-gradient(155deg, rgba(5,17,38,0.88) 0%, rgba(76,63,119,0.80) 55%, rgba(5,17,38,0.94) 100%),
+        url('https://images.unsplash.com/photo-1551190822-a9333d879b1f?auto=format&fit=crop&w=900&q=85') center/cover no-repeat;
       border-radius: var(--r-xl);
       padding: 2.5rem;
       display: flex;
@@ -667,11 +743,16 @@
     .local-map-embed iframe {
       width: 100%; height: 100%;
       display: block; border: 0;
-      filter: invert(90%) hue-rotate(180deg) brightness(.85) saturate(.8);
     }
 
     /* ===== CTA ===== */
-    .section-cta-ps { background: var(--c-navy); position: relative; overflow: hidden; }
+    .section-cta-ps {
+      background:
+        linear-gradient(140deg, rgba(5,17,38,0.93) 0%, rgba(76,63,119,0.82) 50%, rgba(5,17,38,0.96) 100%),
+        url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1600&q=85') center/cover no-repeat;
+      position: relative;
+      overflow: hidden;
+    }
     .cta-ps-orbs { position: absolute; inset: 0; pointer-events: none; }
     .cta-ps-orbs::before {
       content: '';
@@ -713,11 +794,12 @@
       .faq-ps-inner    { grid-template-columns: 1fr; gap: 2rem; }
       .stat-pills      { grid-template-columns: repeat(2, 1fr); }
     }
-    /* Hero: collapse to single column on tablet/mobile */
+    /* Hero: collapse on tablet/mobile */
     @media (max-width: 860px) {
-      .ps-hero-body { grid-template-columns: 1fr; padding-inline: clamp(1rem, 4vw, 2rem); }
+      .ps-hero-body { padding-inline: clamp(1rem, 4vw, 2rem); }
       .ps-hero-visual { display: none; }
       .ps-hero-copy {
+        width: 100%;
         align-items: center;
         text-align: center;
         padding-right: 0;
@@ -731,7 +813,7 @@
     }
     @media (max-width: 580px) {
       .stat-pills { grid-template-columns: 1fr 1fr; }
-      .ps-hero-copy h1 { font-size: 1.85rem; }
+      .ps-hero-copy h1 { font-size: 1.85rem; white-space: normal; }
       .ps-hero-lead { line-height: 1.4; max-width: 100%; }
       .ps-kpi .kpi-strip { width: min(100%, 22.5rem); margin-inline: auto; }
       .ps-hero-ctas { width: 100%; gap: .7rem; }
@@ -753,6 +835,35 @@
       <nav class="nav" aria-label="Principal">
         <a href="#servicios">Servicios</a>
         <a href="#autoridad">Por qué nosotros</a>
+
+        <div class="nav-dropdown" id="dd-loc-ps">
+          <button class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">
+            Ubicaciones
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="nav-dropdown-menu" role="menu">
+            <span class="menu-label">Dónde operamos</span>
+            <a href="/marketing-medico-tijuana/" role="menuitem">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+              Marketing Médico Tijuana
+            </a>
+          </div>
+        </div>
+
+        <div class="nav-dropdown" id="dd-esp-ps">
+          <button class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">
+            Prácticas
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="nav-dropdown-menu" role="menu">
+            <span class="menu-label">Por especialidad médica</span>
+            <a href="/marketing-cirujanos-plasticos-tijuana/" role="menuitem" aria-current="page">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+              Cirujanos Plásticos &mdash; Tijuana
+            </a>
+          </div>
+        </div>
+
         <a href="#faq">FAQ</a>
         <a href="#contacto">Contactar</a>
       </nav>
@@ -767,6 +878,27 @@
     <nav class="mobile-nav" id="mobile-nav-ps" aria-label="Menú móvil" hidden>
       <a href="#servicios">Servicios</a>
       <a href="#autoridad">Por qué nosotros</a>
+
+      <div class="nav-dropdown" id="dd-loc-ps-m">
+        <button class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">
+          Ubicaciones
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="nav-dropdown-menu" role="menu">
+          <a href="/marketing-medico-tijuana/" role="menuitem">Marketing Médico Tijuana</a>
+        </div>
+      </div>
+
+      <div class="nav-dropdown" id="dd-esp-ps-m">
+        <button class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">
+          Prácticas
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="nav-dropdown-menu" role="menu">
+          <a href="/marketing-cirujanos-plasticos-tijuana/" role="menuitem">Cirujanos Plásticos &mdash; Tijuana</a>
+        </div>
+      </div>
+
       <a href="#faq">FAQ</a>
       <a href="#contacto">Contactar</a>
       <a class="btn btn-primary" href="https://api.whatsapp.com/send?phone=526647149135" target="_blank" rel="noopener noreferrer">Solicitar Asesoría</a>
@@ -779,14 +911,20 @@
     <section class="ps-hero" aria-label="Marketing para cirujanos plásticos en Tijuana" data-nav-theme="light">
       <div class="ps-hero-orbs" aria-hidden="true"></div>
 
+      <div class="ps-hero-visual" aria-hidden="true">
+        <img class="ps-hero-visual-img"
+          src="https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?auto=format&fit=crop&w=1200&q=85"
+          alt="Cirujano plástico en Tijuana con guantes quirúrgicos"
+          decoding="async">
+      </div>
+
       <div class="ps-hero-body">
-        <!-- Left column: copy -->
         <div class="ps-hero-copy">
           <p class="kicker kicker-hero" style="display:inline-flex;gap:.4rem;align-items:center;margin-bottom:1.3rem;background:rgba(0,0,0,0.38);backdrop-filter:blur(8px);padding:.35rem .85rem .35rem .65rem;border-radius:999px;border:1px solid rgba(255,255,255,0.18);color:#fff;-webkit-text-fill-color:#fff;font-weight:700;letter-spacing:.06em;width:fit-content;">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
             Cirugía Plástica · Tijuana, B.C.
           </p>
-          <h1>Marketing Digital<br>para <em>Cirujanos Plásticos</em><br>en Tijuana</h1>
+          <h1>Marketing Digital<br>para Cirujanos<br><em>Plásticos</em> en Tijuana</h1>
           <p class="ps-hero-lead">Tijuana es uno de los destinos de cirugía plástica más buscados en América del Norte. Ayudamos a cirujanos y clínicas estéticas a dominar los primeros resultados de Google, captar pacientes de California y construir la confianza clínica que convierte una búsqueda en una consulta programada.</p>
           <div class="ps-hero-ctas">
             <a class="btn btn-accent has-icon" href="#contacto">
@@ -802,14 +940,6 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             Marketing para cirugía plástica dentro de las políticas de Google, Meta y COFEPRIS.
           </div>
-        </div>
-
-        <!-- Right column: photo with gradient blend -->
-        <div class="ps-hero-visual" aria-hidden="true">
-          <img class="ps-hero-visual-img"
-            src="https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?auto=format&fit=crop&w=960&q=85"
-            alt=""
-            decoding="async">
         </div>
       </div>
 
@@ -832,7 +962,7 @@
       <div class="container market-ps-grid">
         <div class="market-ps-copy">
           <p class="kicker kicker-light">El mercado de la cirugía plástica en Tijuana</p>
-          <h2>Más de 400,000 pacientes de EE.&nbsp;UU. cruzan a Tijuana al año buscando procedimientos estéticos</h2>
+          <h2>Más de 400,000 pacientes de EE.&nbsp;UU. buscan cirugía plástica en Tijuana cada año</h2>
           <p>Tijuana es el destino número uno de turismo médico estético en América del Norte. Los procedimientos cuestan entre un 40&nbsp;% y un 70&nbsp;% menos que en California, con cirujanos certificados e instalaciones de alto nivel. El paciente ya tomó la decisión de venir. La pregunta es si te encuentra a ti antes que a tu competencia.</p>
           <p>Las búsquedas de "rhinoplasty Tijuana", "tummy tuck Tijuana" y "plastic surgery Mexico" suman decenas de miles de consultas mensuales en Google. Captar esa demanda exige una estrategia bilingüe, técnica y específica para cirugía estética.</p>
           <div class="procedure-pills">
@@ -899,10 +1029,10 @@
     </section>
 
     <!-- ===== CHALLENGE ===== -->
-    <section class="section section-challenge-ps" id="inicio" data-nav-theme="dark">
+    <section class="section section-challenge-ps" id="inicio" data-nav-theme="light">
       <div class="container challenge-ps-grid">
         <div>
-          <p class="kicker">El reto del cirujano plástico moderno</p>
+          <p class="kicker kicker-light">El reto del cirujano plástico moderno</p>
           <h2>Un bisturí de precisión merece una estrategia digital igual de precisa</h2>
           <p class="challenge-body">La cirugía plástica en Tijuana tiene una competencia feroz. Decenas de clínicas compiten por los mismos pacientes, en los mismos pasillos de búsqueda de Google, con los mismos términos. El que aparece primero, con más confianza clínica, gana la consulta.</p>
           <p class="challenge-body">Además, Google y Meta tienen restricciones específicas para publicidad de procedimientos estéticos: no se pueden usar imágenes de antes/después en anuncios pagados, no se puede prometer resultados, y ciertos procedimientos requieren certificación especial de anunciante. Navegar esas reglas sin perder pacientes es exactamente lo que hacemos.</p>
@@ -1034,62 +1164,70 @@
           <p class="subhead-muted">Cada servicio contempla las restricciones publicitarias, el ciclo de decisión largo y la alta competencia del mercado estético transfronterizo.</p>
         </div>
 
-        <div class="service-ps-grid">
+        <div class="service-ps-bento">
 
-          <article class="service-ps-card featured-ps">
+          <!-- Featured card: Search Marketing (Google Ads + SEO) -->
+          <article class="service-ps-featured">
             <div class="featured-badge-ps">Más solicitado por cirujanos</div>
             <div class="service-ps-icon" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
             </div>
-            <h3>SEO por Procedimiento: páginas individuales que rankean</h3>
-            <p>Una página dedicada por cada procedimiento —rinoplastia, mamoplastia, liposucción, BBL— optimizada para los términos exactos en inglés y español. El paciente que busca, te encuentra primero.</p>
-            <a href="#contacto" class="chip-link-light">Explorar estrategia SEO →</a>
+            <h3>Search Marketing: Google Ads + SEO Médico</h3>
+            <p>Aparece en el momento exacto en que el paciente escribe su procedimiento. Combinamos SEO bilingüe por procedimiento —una página dedicada para rinoplastia, mamoplastia, BBL y liposucción— con campañas de Google Ads certificadas en Healthcare &amp; Medicines, geo-segmentadas hacia San Diego, LA y condados fronterizos. Solo pagas por prospectos con alta intención de agendar.</p>
+            <a href="#contacto" class="chip-link-light">Explorar estrategia →</a>
           </article>
 
-          <article class="service-ps-card">
-            <div class="service-ps-icon" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-            </div>
-            <h3>Google Ads Certificados para Cirugía Estética</h3>
-            <p>Campañas dentro de la política de Healthcare &amp; Medicines de Google. Geo-targeting hacia San Diego, LA y condados adyacentes. Solo pagas por prospectos con alta intención de agendar.</p>
-            <a href="#contacto" class="chip-link-light">Ver cómo funciona →</a>
-          </article>
+          <!-- Right column: animated ticker (5 cards, 2 visible at a time) -->
+          <div class="service-ps-ticker-wrap" aria-label="Servicios adicionales">
+            <div class="service-ps-ticker" id="svcTicker">
 
-          <article class="service-ps-card">
-            <div class="service-ps-icon" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-            </div>
-            <h3>Sitio Web de Alta Conversión para Cirujanos</h3>
-            <p>Galerías de portafolio clínico, formularios de pre-consulta, contacto por WhatsApp y políticas de privacidad para pacientes de EE. UU. Todo bilingüe, rápido y optimizado para conversión.</p>
-            <a href="#contacto" class="chip-link-light">Evaluar mi sitio actual →</a>
-          </article>
+              <article class="service-ps-small">
+                <div class="service-ps-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                </div>
+                <h3>Sitio Web de Alta Conversión para Cirujanos</h3>
+                <p>Galerías de portafolio clínico, formularios de pre-consulta, WhatsApp y políticas para pacientes de EE. UU. Todo bilingüe y optimizado para conversión.</p>
+                <a href="#contacto" class="chip-link-light">Evaluar mi sitio →</a>
+              </article>
 
-          <article class="service-ps-card">
-            <div class="service-ps-icon" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-            </div>
-            <h3>Redes Sociales y Marketing Visual</h3>
-            <p>Contenido educativo para Instagram, Facebook y TikTok que muestra tu expertise sin violar políticas de antes/después. Construye confianza antes de la primera consulta.</p>
-            <a href="#contacto" class="chip-link-light">Impulsar mi presencia →</a>
-          </article>
+              <article class="service-ps-small">
+                <div class="service-ps-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                </div>
+                <h3>Redes Sociales y Marketing Visual</h3>
+                <p>Contenido educativo para Instagram, Facebook y TikTok que construye confianza sin violar políticas de antes/después.</p>
+                <a href="#contacto" class="chip-link-light">Impulsar mi presencia →</a>
+              </article>
 
-          <article class="service-ps-card">
-            <div class="service-ps-icon" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            </div>
-            <h3>Gestión de Reseñas en Inglés y Español</h3>
-            <p>Estrategia sistematizada para generar y responder reseñas verificadas en Google. El paciente de California decide basándose en lo que leen. Esa primera impresión se trabaja, no se improvisa.</p>
-            <a href="#contacto" class="chip-link-light">Fortalecer mi reputación →</a>
-          </article>
+              <article class="service-ps-small">
+                <div class="service-ps-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <h3>Gestión de Reseñas en Inglés y Español</h3>
+                <p>Estrategia sistematizada para generar y responder reseñas verificadas en Google. El paciente de California decide por lo que lee.</p>
+                <a href="#contacto" class="chip-link-light">Fortalecer mi reputación →</a>
+              </article>
 
-          <article class="service-ps-card">
-            <div class="service-ps-icon" aria-hidden="true">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              <article class="service-ps-small">
+                <div class="service-ps-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                </div>
+                <h3>Analítica del Funnel Estético</h3>
+                <p>Rastreo de cada etapa: búsqueda → consulta agendada. Sabes exactamente cuánto te cuesta cada procedimiento cerrado.</p>
+                <a href="#contacto" class="chip-link-light">Ver dashboard →</a>
+              </article>
+
+              <article class="service-ps-small">
+                <div class="service-ps-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6 6l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                </div>
+                <h3>Consulta Automatizada por WhatsApp</h3>
+                <p>Flujos de conversación que califican al paciente, agendan la pre-consulta y reducen el tiempo de respuesta a minutos.</p>
+                <a href="#contacto" class="chip-link-light">Automatizar consultas →</a>
+              </article>
+
             </div>
-            <h3>Analítica del Funnel Estético</h3>
-            <p>Rastreo de cada etapa del recorrido del paciente: desde la búsqueda hasta la consulta agendada. Sabes exactamente cuánto te cuesta cada procedimiento cerrado y qué canal entrega el mejor retorno.</p>
-            <a href="#contacto" class="chip-link-light">Ver dashboard de ejemplo →</a>
-          </article>
+          </div>
 
         </div>
       </div>
@@ -1129,15 +1267,15 @@
 
         <div class="authority-card-ps">
           <p class="kicker kicker-light" style="margin-bottom:.5rem;">Procedimientos que trabajamos</p>
-          <h3>Marketing especializado para los procedimientos de mayor demanda transfronteriza en Tijuana</h3>
+          <h3>Rinoplastia, mamoplastia, BBL y más: marketing especializado para los procedimientos de mayor demanda en Tijuana</h3>
           <div class="authority-divider"></div>
-          <p>Rinoplastia — la búsqueda #1 de cirugía plástica en Tijuana</p>
+          <p>Rinoplastia — la búsqueda #1 de cirugía plástica en Tijuana ("rhinoplasty Tijuana")</p>
           <div class="authority-divider"></div>
-          <p>Mamoplastia de aumento y reducción</p>
+          <p>Mamoplastia de aumento y reducción — "breast augmentation Tijuana"</p>
           <div class="authority-divider"></div>
-          <p>Abdominoplastia y mommy makeover</p>
+          <p>Abdominoplastia y mommy makeover — alta demanda transfronteriza</p>
           <div class="authority-divider"></div>
-          <p>Liposucción y Brazilian Butt Lift (BBL)</p>
+          <p>Liposucción y Brazilian Butt Lift (BBL) — "BBL Tijuana Mexico"</p>
           <div class="authority-divider"></div>
           <p>Blefaroplastia, lifting facial y procedimientos faciales</p>
           <div class="authority-divider"></div>
@@ -1355,6 +1493,39 @@
       });
     })();
 
+    // ---- Dropdown menus ----
+    (function() {
+      document.querySelectorAll('.nav-dropdown-trigger').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          var dd = btn.closest('.nav-dropdown');
+          var isOpen = dd.classList.contains('is-open');
+          document.querySelectorAll('.nav-dropdown.is-open').forEach(function(o) {
+            o.classList.remove('is-open');
+            o.querySelector('.nav-dropdown-trigger').setAttribute('aria-expanded', 'false');
+          });
+          if (!isOpen) {
+            dd.classList.add('is-open');
+            btn.setAttribute('aria-expanded', 'true');
+          }
+          e.stopPropagation();
+        });
+      });
+      document.addEventListener('click', function() {
+        document.querySelectorAll('.nav-dropdown.is-open').forEach(function(o) {
+          o.classList.remove('is-open');
+          o.querySelector('.nav-dropdown-trigger').setAttribute('aria-expanded', 'false');
+        });
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.nav-dropdown.is-open').forEach(function(o) {
+            o.classList.remove('is-open');
+            o.querySelector('.nav-dropdown-trigger').setAttribute('aria-expanded', 'false');
+          });
+        }
+      });
+    })();
+
     // ---- Header scroll class ----
     var hdr = document.querySelector('.site-header');
     var SCROLL_THRESHOLD = 20;
@@ -1433,6 +1604,38 @@
       startAuto();
     })();
 
+    // ---- Services ticker ----
+    (function() {
+      var CARD_H = 220, GAP = 20, STEP = CARD_H + GAP;
+      var ANIM = 520, PAUSE = 2600;
+      var ticker = document.getElementById('svcTicker');
+      if (!ticker) return;
+      var origCards = Array.from(ticker.children);
+      var N = origCards.length;
+      // Clone once for seamless loop: when we reach card N we've shown all
+      // originals; clones are identical so the snap-back is invisible
+      origCards.forEach(function(c) { ticker.appendChild(c.cloneNode(true)); });
+      var idx = 0;
+
+      function advance() {
+        idx++;
+        ticker.style.transition = 'transform ' + ANIM + 'ms cubic-bezier(.4,0,.2,1)';
+        ticker.style.transform = 'translateY(-' + (idx * STEP) + 'px)';
+
+        if (idx >= N) {
+          // After animation finishes, silently reset to position 0 (first real card)
+          // The reset is invisible because card[0] === clone[0] visually
+          setTimeout(function() {
+            ticker.style.transition = 'none';
+            ticker.style.transform = 'translateY(0)';
+            idx = 0;
+          }, ANIM + 30);
+        }
+      }
+
+      setInterval(advance, PAUSE);
+    })();
+
     // ---- Footer year ----
     (function() {
       var el = document.getElementById('fyear-ps');
@@ -1454,7 +1657,7 @@
     // ---- Scroll reveal ----
     (function() {
       var items = document.querySelectorAll(
-        '.service-ps-card, .authority-point, .faq-ps-item, .stat-pill'
+        '.service-ps-featured, .service-ps-small, .authority-point, .faq-ps-item, .stat-pill'
       );
       if (!items.length || !window.IntersectionObserver) return;
       items.forEach(function(el) {
