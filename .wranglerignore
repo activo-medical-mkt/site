@@ -1,0 +1,15 @@
+# VCS and local metadata
+.git/
+.git/**
+
+# Wrangler and local tooling
+.wrangler/
+node_modules/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Optional docs not required for runtime
+memories/

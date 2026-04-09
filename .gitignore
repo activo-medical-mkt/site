@@ -1,0 +1,14 @@
+# Git metadata
+.git/
+.git/**
+
+# Wrangler local files
+.wrangler/
+
+# Dependency folders
+node_modules/
+
+# Editor/OS
+.vscode/
+.DS_Store
+Thumbs.db

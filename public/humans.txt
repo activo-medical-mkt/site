@@ -1,0 +1,9 @@
+/* TEAM */
+Agency: Activo Medical Marketing
+Site: https://activomedical.com/
+Contact: https://api.whatsapp.com/send?phone=526647149135
+
+/* SITE */
+Standards: HTML5, CSS3, JavaScript
+Type: Marketing website
+Language: es-MX

@@ -1,0 +1,4 @@
+Contact: https://api.whatsapp.com/send?phone=526647149135
+Expires: 2027-04-06T00:00:00.000Z
+Preferred-Languages: es, en
+Canonical: https://activomedical.com/.well-known/security.txt
