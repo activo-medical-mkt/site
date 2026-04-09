@@ -5,6 +5,10 @@
 # Build output (generated at deploy time by build.js)
 public/
 
+# Environment / secrets
+.env
+.env.*
+
 # Wrangler local files
 .wrangler/
 
