@@ -20,6 +20,11 @@ const EXCLUDE = new Set([
   "lib",
   "src",
   "_redirects",
+  ".env",
+  ".env.local",
+  ".env.production",
+  "package.json",
+  "package-lock.json",
 ]);
 
 // Clean & recreate
