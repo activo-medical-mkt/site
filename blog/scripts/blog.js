@@ -214,7 +214,7 @@
             return '<article class="blog-card" data-cat="' + esc(post.cat_key) + '">' +
                 '<a href="' + postUrl(post.slug) + '" class="blog-card-image-link">' + imageHtml + '</a>' +
                 '<div class="blog-card-body">' +
-                    '<span class="blog-cat-tag blog-cat--' + esc(post.cat_key) + '">' + esc(post.category) + '</span>' +
+                    '<span class="blog-cat-tag blog-cat--' + esc(post.cat_key) + '"' + catAutoStyle(post.cat_key) + '>' + esc(post.category) + '</span>' +
                     '<h3 class="blog-card-title"><a href="' + postUrl(post.slug) + '">' + esc(post.title) + '</a></h3>' +
                     '<p class="blog-card-excerpt">' + esc(post.excerpt) + '</p>' +
                     '<div class="blog-card-meta">' +

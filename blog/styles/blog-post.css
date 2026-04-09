@@ -789,6 +789,8 @@
 
 .post-page .cta-section .section-title {
     max-width: 600px;
+    -webkit-text-stroke: 0;
+    text-shadow: none;
 }
 
 .post-page .cta-section .cta-desc {

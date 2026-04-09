@@ -644,6 +644,47 @@
       </div>
     </section>
 
+    <section class="section section-recent-posts" id="articulos-recientes" data-nav-theme="dark">
+      <div class="container">
+        <div class="recent-posts-head">
+          <p class="kicker">Desde el blog</p>
+          <h2>Artículos recientes para atraer más pacientes</h2>
+          <p>Ideas accionables sobre SEO médico, reputación digital y captación de alto valor en salud.</p>
+        </div>
+
+        <div class="recent-posts-grid" id="homeRecentPosts" aria-live="polite">
+          <article class="recent-post-card recent-post-card--loading">
+            <div class="recent-post-media"></div>
+            <div class="recent-post-body">
+              <span class="recent-post-cat">Cargando</span>
+              <h3 class="recent-post-title">Cargando artículo reciente...</h3>
+            </div>
+          </article>
+          <article class="recent-post-card recent-post-card--loading">
+            <div class="recent-post-media"></div>
+            <div class="recent-post-body">
+              <span class="recent-post-cat">Cargando</span>
+              <h3 class="recent-post-title">Cargando artículo reciente...</h3>
+            </div>
+          </article>
+          <article class="recent-post-card recent-post-card--loading">
+            <div class="recent-post-media"></div>
+            <div class="recent-post-body">
+              <span class="recent-post-cat">Cargando</span>
+              <h3 class="recent-post-title">Cargando artículo reciente...</h3>
+            </div>
+          </article>
+        </div>
+
+        <div class="recent-posts-actions">
+          <a class="btn btn-primary has-icon" href="/blog">
+            Ver todos los artículos
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
     <!-- ==============================  CTA FINAL — gradient dark  ================================ -->
     <section class="section section-cta" id="contacto" data-nav-theme="light">
       <div class="cta-orbs" aria-hidden="true">
@@ -745,8 +786,9 @@
     <div class="container footer-bottom">
       <small>© <span id="fyear">2026</span> Activo Medical Marketing. Todos los derechos reservados.</small>
       <nav aria-label="Legal">
-        <a href="#">Privacidad</a>
-        <a href="#">Términos de uso</a>
+        <a href="/politica-de-privacidad/">Privacidad</a>
+        <a href="/terminos-de-uso/">Términos de uso</a>
+        <a href="/sitemap.xml">sitemap.xml</a>
       </nav>
     </div>
   </footer>
@@ -1244,6 +1286,120 @@
         }
       }, { threshold: 0.15 });
       obs.observe(section);
+    })();
+
+    // ---- Home recent posts (3 latest from CMS) ----
+    (function() {
+      var container = document.getElementById('homeRecentPosts');
+      if (!container) return;
+
+      function esc(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/\"/g, '&quot;');
+      }
+
+      function slugify(text) {
+        return String(text || '')
+          .toLowerCase()
+          .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+          .replace(/&/g, 'and')
+          .replace(/[^a-z0-9\s-]/g, '')
+          .trim()
+          .replace(/\s+/g, '-');
+      }
+
+      function parsePostsPayload(payload) {
+        if (Array.isArray(payload)) return payload;
+        if (!payload || typeof payload !== 'object') return [];
+        if (Array.isArray(payload.posts)) return payload.posts;
+        if (Array.isArray(payload.items)) return payload.items;
+        if (payload.data) {
+          if (Array.isArray(payload.data)) return payload.data;
+          if (Array.isArray(payload.data.posts)) return payload.data.posts;
+          if (Array.isArray(payload.data.items)) return payload.data.items;
+        }
+        return [];
+      }
+
+      function isPublished(post) {
+        var raw = post.status || post.state || post.publish_status || post.visibility;
+        if (raw === undefined || raw === null || raw === '') return true;
+        var status = String(raw).toLowerCase();
+        return status === 'published' || status === 'live' || status === 'public';
+      }
+
+      function fmt(dateStr) {
+        var d = new Date(dateStr);
+        if (isNaN(d.getTime())) return '';
+        return d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' });
+      }
+
+      function categoryClass(category) {
+        var key = slugify(category);
+        if (key.indexOf('seo') !== -1) return 'recent-post-cat--seo';
+        if (key.indexOf('turismo') !== -1) return 'recent-post-cat--turismo';
+        if (key.indexOf('reputacion') !== -1) return 'recent-post-cat--reputacion';
+        return 'recent-post-cat--default';
+      }
+
+      function postUrl(post) {
+        return '/blog/' + encodeURIComponent(String(post.slug || '').trim());
+      }
+
+      function render(posts) {
+        if (!posts.length) {
+          container.innerHTML = '<article class="recent-post-empty">No hay artículos recientes disponibles por el momento.</article>';
+          return;
+        }
+
+        container.innerHTML = posts.map(function(post) {
+          var title = post.title || 'Artículo reciente';
+          var excerpt = post.excerpt || '';
+          var category = post.category || 'Blog';
+          var image = post.hero_image || '';
+          var date = fmt(post.published_at || post.created_at);
+
+          var media = image
+            ? '<img src="' + esc(image) + '" alt="' + esc(title) + '" loading="lazy" decoding="async">'
+            : '<div class="recent-post-media-fallback" aria-hidden="true"></div>';
+
+          return '' +
+            '<article class="recent-post-card">' +
+              '<a class="recent-post-media" href="' + postUrl(post) + '">' + media + '</a>' +
+              '<div class="recent-post-body">' +
+                '<span class="recent-post-cat ' + categoryClass(category) + '">' + esc(category) + '</span>' +
+                '<h3 class="recent-post-title"><a href="' + postUrl(post) + '">' + esc(title) + '</a></h3>' +
+                '<p class="recent-post-excerpt">' + esc(excerpt) + '</p>' +
+                '<div class="recent-post-meta">' + esc(date) + '</div>' +
+              '</div>' +
+            '</article>';
+        }).join('');
+      }
+
+      fetch('/api/cms/posts?projectId=65bb6d01', {
+        headers: { accept: 'application/json' }
+      })
+      .then(function(res) {
+        if (!res.ok) throw new Error('CMS response ' + res.status);
+        return res.json();
+      })
+      .then(function(payload) {
+        var posts = parsePostsPayload(payload)
+          .filter(isPublished)
+          .sort(function(a, b) {
+            var da = new Date(a.published_at || a.created_at || 0).getTime() || 0;
+            var db = new Date(b.published_at || b.created_at || 0).getTime() || 0;
+            return db - da;
+          })
+          .slice(0, 3);
+        render(posts);
+      })
+      .catch(function() {
+        container.innerHTML = '<article class="recent-post-empty">No pudimos cargar artículos ahora. <a href="/blog">Ver blog completo</a>.</article>';
+      });
     })();
 
     // ---- Mobile nav toggle ----
