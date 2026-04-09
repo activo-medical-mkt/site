@@ -18,6 +18,8 @@ const EXCLUDE = new Set([
   "generate-sitemap.ps1",
   "submit-indexnow.ps1",
   "lib",
+  "src",
+  "_redirects",
 ]);
 
 // Clean & recreate
