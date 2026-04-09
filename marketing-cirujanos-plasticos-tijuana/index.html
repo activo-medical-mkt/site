@@ -144,62 +144,120 @@
       min-height: 100svh;
       display: flex;
       flex-direction: column;
-      justify-content: flex-end;
-      overflow: hidden;
       background: var(--c-navy);
+      overflow: hidden;
     }
-    .ps-hero-img {
+    /* Ambient orb lights on the left side */
+    .ps-hero-orbs {
       position: absolute;
       inset: 0;
-      background-image: url('https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?auto=format&fit=crop&w=1920&q=80');
-      background-size: cover;
-      background-position: center 30%;
+      pointer-events: none;
       z-index: 0;
     }
-    .ps-hero-img::after {
+    .ps-hero-orbs::before {
       content: '';
       position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(180deg, rgba(5,17,38,0.32) 0%, rgba(5,17,38,0.64) 45%, rgba(5,17,38,0.93) 100%),
-        radial-gradient(ellipse 80% 60% at 50% 60%, rgba(5,17,38,0.50) 0%, transparent 70%);
+      top: 5%; left: -8%;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,127,151,.14) 0%, transparent 65%);
     }
-    .ps-hero-centered {
+    .ps-hero-orbs::after {
+      content: '';
+      position: absolute;
+      bottom: 15%; left: 20%;
+      width: 420px; height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,88,127,.10) 0%, transparent 70%);
+    }
+    /* Two-column wrapper */
+    .ps-hero-body {
+      flex: 1;
       position: relative;
       z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      max-width: 1320px;
+      width: 100%;
+      margin-inline: auto;
+      padding-inline: clamp(1rem, 4vw, 4rem);
+    }
+    /* Left column: copy */
+    .ps-hero-copy {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding-block: clamp(7rem, 14vw, 10rem) clamp(3rem, 5vw, 4rem);
-      max-width: 840px;
-      margin-inline: auto;
+      align-items: flex-start;
+      justify-content: center;
+      padding-block: clamp(7rem, 12vw, 9rem) clamp(2.5rem, 4vw, 3.5rem);
+      padding-right: clamp(1.5rem, 3vw, 3.5rem);
     }
-    .ps-hero-centered h1 {
-      font-size: clamp(2rem, 5vw, 3.9rem);
+    .ps-hero-copy h1 {
+      font-size: clamp(2rem, 4.2vw, 3.75rem);
       color: #fff;
       margin-bottom: 1.25rem;
       line-height: 1.06;
     }
-    .ps-hero-centered h1 em {
+    .ps-hero-copy h1 em {
       font-style: normal;
       background: linear-gradient(90deg, #00c4d4 0%, #c47acf 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
+    /* Right column: photo with gradient blends */
+    .ps-hero-visual {
+      position: relative;
+      overflow: hidden;
+      /* extend to the viewport right edge */
+      margin-right: calc(-1 * clamp(1rem, 4vw, 4rem));
+    }
+    .ps-hero-visual-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+    /* Left-edge blend — image dissolves into the navy on the copy side */
+    .ps-hero-visual::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(
+        to right,
+        rgba(5,17,38,1)    0%,
+        rgba(5,17,38,0.72) 14%,
+        rgba(5,17,38,0.22) 38%,
+        rgba(5,17,38,0)    62%
+      );
+    }
+    /* Top + bottom vignette */
+    .ps-hero-visual::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(
+        to bottom,
+        rgba(5,17,38,0.72) 0%,
+        transparent 18%,
+        transparent 65%,
+        rgba(5,17,38,0.90) 100%
+      );
+    }
     .ps-hero-lead {
       color: rgba(255,255,255,0.72);
-      font-size: clamp(1rem, 1.6vw, 1.15rem);
+      font-size: clamp(1rem, 1.5vw, 1.1rem);
       line-height: 1.65;
       margin-bottom: 2rem;
-      max-width: 640px;
+      max-width: 520px;
     }
     .ps-hero-ctas {
       display: flex;
       gap: 1rem;
       flex-wrap: wrap;
-      justify-content: center;
       margin-bottom: 2.5rem;
     }
     .trust-bar {
@@ -655,14 +713,26 @@
       .faq-ps-inner    { grid-template-columns: 1fr; gap: 2rem; }
       .stat-pills      { grid-template-columns: repeat(2, 1fr); }
     }
+    /* Hero: collapse to single column on tablet/mobile */
+    @media (max-width: 860px) {
+      .ps-hero-body { grid-template-columns: 1fr; padding-inline: clamp(1rem, 4vw, 2rem); }
+      .ps-hero-visual { display: none; }
+      .ps-hero-copy {
+        align-items: center;
+        text-align: center;
+        padding-right: 0;
+      }
+      .ps-hero-ctas { justify-content: center; }
+      .trust-bar { margin-inline: auto; }
+    }
     @media (max-width: 720px) {
       .local-map-inner { grid-template-columns: 1fr; }
       .local-map-embed { height: 260px; }
     }
     @media (max-width: 580px) {
       .stat-pills { grid-template-columns: 1fr 1fr; }
-      .ps-hero-centered h1 { font-size: 1.85rem; }
-      .ps-hero-lead { line-height: 1.4; }
+      .ps-hero-copy h1 { font-size: 1.85rem; }
+      .ps-hero-lead { line-height: 1.4; max-width: 100%; }
       .ps-kpi .kpi-strip { width: min(100%, 22.5rem); margin-inline: auto; }
       .ps-hero-ctas { width: 100%; gap: .7rem; }
       .ps-hero-ctas .btn { flex: 1 1 0; min-width: 0; justify-content: center; padding-inline: .9rem; }
@@ -707,11 +777,12 @@
 
     <!-- ===== HERO ===== -->
     <section class="ps-hero" aria-label="Marketing para cirujanos plásticos en Tijuana" data-nav-theme="light">
-      <div class="ps-hero-img" aria-hidden="true"></div>
+      <div class="ps-hero-orbs" aria-hidden="true"></div>
 
-      <div class="container">
-        <div class="ps-hero-centered">
-          <p class="kicker kicker-hero" style="display:inline-flex;gap:.4rem;align-items:center;margin-bottom:1.3rem;background:rgba(0,0,0,0.38);backdrop-filter:blur(8px);padding:.35rem .85rem .35rem .65rem;border-radius:999px;border:1px solid rgba(255,255,255,0.18);color:#fff;-webkit-text-fill-color:#fff;font-weight:700;letter-spacing:.06em;">
+      <div class="ps-hero-body">
+        <!-- Left column: copy -->
+        <div class="ps-hero-copy">
+          <p class="kicker kicker-hero" style="display:inline-flex;gap:.4rem;align-items:center;margin-bottom:1.3rem;background:rgba(0,0,0,0.38);backdrop-filter:blur(8px);padding:.35rem .85rem .35rem .65rem;border-radius:999px;border:1px solid rgba(255,255,255,0.18);color:#fff;-webkit-text-fill-color:#fff;font-weight:700;letter-spacing:.06em;width:fit-content;">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
             Cirugía Plástica · Tijuana, B.C.
           </p>
@@ -731,6 +802,14 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             Marketing para cirugía plástica dentro de las políticas de Google, Meta y COFEPRIS.
           </div>
+        </div>
+
+        <!-- Right column: photo with gradient blend -->
+        <div class="ps-hero-visual" aria-hidden="true">
+          <img class="ps-hero-visual-img"
+            src="https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?auto=format&fit=crop&w=960&q=85"
+            alt=""
+            decoding="async">
         </div>
       </div>
 
