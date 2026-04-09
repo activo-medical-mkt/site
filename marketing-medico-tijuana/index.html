@@ -13,7 +13,10 @@
   <meta property="og:url" content="https://activomedical.com/marketing-medico-tijuana/">
   <meta property="og:image" content="https://activomedical.com/Assets/Images/advice-doctor-touching-ipad.jpg">
   <meta property="og:image:alt" content="Marketing médico para clínicas y especialistas en Tijuana">
+  <meta property="og:site_name" content="Activo Medical Marketing">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Agencia de Marketing Médico en Tijuana | Activo Medical Marketing">
+  <meta name="twitter:description" content="Estrategias bilingües de alto impacto para clínicas y médicos en Tijuana. Captación de pacientes locales y transfronterizos de California.">
   <meta name="twitter:image" content="https://activomedical.com/Assets/Images/advice-doctor-touching-ipad.jpg">
   <link rel="canonical" href="https://activomedical.com/marketing-medico-tijuana/">
   <link rel="icon" href="../Assets/Logos/favicon.ico" sizes="any">
@@ -59,6 +62,23 @@
         },
         "url": "https://activomedical.com/marketing-medico-tijuana/",
         "areaServed": ["Tijuana", "Baja California", "San Diego", "Southern California"]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Inicio",
+            "item": "https://activomedical.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Marketing Médico en Tijuana",
+            "item": "https://activomedical.com/marketing-medico-tijuana/"
+          }
+        ]
       },
       {
         "@type": "FAQPage",
@@ -752,6 +772,7 @@
           </div>
         </div>
 
+        <a href="/blog">Blog</a>
         <a href="#faq">FAQ</a>
         <a href="#contacto">Contactar</a>
       </nav>
@@ -784,6 +805,7 @@
         </div>
       </div>
 
+      <a href="/blog">Blog</a>
       <a href="#faq">FAQ</a>
       <a href="#contacto">Contactar</a>
       <a class="btn btn-primary" href="https://api.whatsapp.com/send?phone=526647149135" target="_blank" rel="noopener noreferrer">Solicitar Asesoría</a>
@@ -1294,11 +1316,26 @@
       var btn = document.querySelector('.nav-toggle');
       var nav = document.getElementById('mobile-nav-tj');
       if (!btn || !nav) return;
+
+      function closeMobileNav() {
+        btn.setAttribute('aria-expanded', 'false');
+        nav.hidden = true;
+        nav.querySelectorAll('.nav-dropdown.is-open').forEach(function(dd) {
+          dd.classList.remove('is-open');
+          var trigger = dd.querySelector('.nav-dropdown-trigger');
+          if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        });
+      }
+
       btn.addEventListener('click', function() {
         var open = nav.hidden;
         nav.hidden = !open;
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
       });
+
+      window.addEventListener('resize', function() {
+        if (window.innerWidth > 1100) closeMobileNav();
+      }, { passive: true });
     })();
 
     // ---- Dropdown menus ----

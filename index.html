@@ -13,7 +13,10 @@
   <meta property="og:url" content="https://activomedical.com/">
   <meta property="og:image" content="https://activomedical.com/Assets/Images/agencia%20de%20marketing%20para%20profesionales%20de%20la%20salud.jpg">
   <meta property="og:image:alt" content="Agencia de marketing para profesionales de la salud">
+  <meta property="og:site_name" content="Activo Medical Marketing">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Agencia de Marketing para Médicos | Activo Medical Marketing">
+  <meta name="twitter:description" content="Marketing digital médico ético y rentable para clínicas y consultorios privados.">
   <meta name="twitter:image" content="https://activomedical.com/Assets/Images/agencia%20de%20marketing%20para%20profesionales%20de%20la%20salud.jpg">
   <link rel="canonical" href="https://activomedical.com/">
   <link rel="icon" href="Assets/Logos/favicon.ico" sizes="any">
@@ -47,8 +50,19 @@
         "@type": "Organization",
         "name": "Activo Medical Marketing",
         "description": "Agencia de marketing digital para médicos, clínicas y especialistas en México.",
+        "url": "https://activomedical.com/",
+        "logo": "https://activomedical.com/Assets/Logos/activo-logo-white.png",
         "image": "https://activomedical.com/Assets/Images/agencia%20de%20marketing%20para%20profesionales%20de%20la%20salud.jpg",
-        "sameAs": []
+        "contactPoint": [
+          {
+            "@type": "ContactPoint",
+            "contactType": "sales",
+            "telephone": "+52-664-714-9135",
+            "email": "hello@activomedical.com",
+            "areaServed": ["MX", "US"],
+            "availableLanguage": ["es", "en"]
+          }
+        ]
       },
       {
         "@type": "FAQPage",
@@ -126,6 +140,7 @@
           </div>
         </div>
 
+        <a href="/blog">Blog</a>
         <a href="#faq">FAQ</a>
         <a href="#contacto">Contacto</a>
       </nav>
@@ -160,6 +175,7 @@
         </div>
       </div>
 
+      <a href="/blog">Blog</a>
       <a href="#faq">FAQ</a>
       <a href="#contacto">Contacto</a>
       <a class="btn btn-primary has-icon" href="https://api.whatsapp.com/send?phone=526647149135" target="_blank" rel="noopener noreferrer"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>Solicitar Asesoría</a>
@@ -1236,11 +1252,25 @@
     const toggle = document.querySelector('.nav-toggle');
     const mobileNav = document.getElementById('mobile-nav');
     if (toggle && mobileNav) {
+      const closeMobileNav = () => {
+        toggle.setAttribute('aria-expanded', 'false');
+        mobileNav.hidden = true;
+        mobileNav.querySelectorAll('.nav-dropdown.is-open').forEach((dd) => {
+          dd.classList.remove('is-open');
+          const trigger = dd.querySelector('.nav-dropdown-trigger');
+          if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        });
+      };
+
       toggle.addEventListener('click', () => {
         const open = toggle.getAttribute('aria-expanded') === 'true';
         toggle.setAttribute('aria-expanded', String(!open));
         mobileNav.hidden = open;
       });
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 1100) closeMobileNav();
+      }, { passive: true });
     }
 
     // ---- Dropdown menus (mobile click-toggle + keyboard) ----

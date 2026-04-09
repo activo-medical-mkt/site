@@ -1,10 +1,22 @@
 param(
   [string]$SitemapPath = "./sitemap.xml",
   [string]$KeyPath = "./d3e26d3fa7e2443d8724a878a6929b6a.txt",
-  [string]$Endpoint = "https://api.indexnow.org/indexnow"
+  [string]$Endpoint = "https://api.indexnow.org/indexnow",
+  [switch]$RegenerateSitemap,
+  [string]$CmsPublicToken = $env:NEXT_PUBLIC_CMS_PUBLIC_TOKEN
 )
 
 $ErrorActionPreference = "Stop"
+
+if ($RegenerateSitemap) {
+  $generator = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "generate-sitemap.ps1"
+  if (-not (Test-Path $generator)) {
+    throw "Sitemap generator not found: $generator"
+  }
+
+  Write-Host "Regenerating sitemap from CMS..."
+  & $generator -SitemapPath $SitemapPath -PublicToken $CmsPublicToken
+}
 
 if (-not (Test-Path $SitemapPath)) {
   throw "Sitemap file not found: $SitemapPath"

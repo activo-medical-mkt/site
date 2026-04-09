@@ -13,7 +13,10 @@
   <meta property="og:url" content="https://activomedical.com/marketing-cirujanos-plasticos-tijuana/">
   <meta property="og:image" content="https://activomedical.com/Assets/Images/agencia%20de%20marketing%20para%20profesionales%20de%20la%20salud.jpg">
   <meta property="og:image:alt" content="Marketing digital para cirujanos plásticos en Tijuana">
+  <meta property="og:site_name" content="Activo Medical Marketing">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Marketing para Cirujanos Plásticos en Tijuana | Activo Medical Marketing">
+  <meta name="twitter:description" content="Estrategias de marketing digital para cirujanos plásticos en Tijuana. Capta pacientes de EE. UU. y México con SEO y Google Ads especializados para cirugía estética.">
   <meta name="twitter:image" content="https://activomedical.com/Assets/Images/agencia%20de%20marketing%20para%20profesionales%20de%20la%20salud.jpg">
   <link rel="canonical" href="https://activomedical.com/marketing-cirujanos-plasticos-tijuana/">
   <link rel="alternate" hreflang="es" href="https://activomedical.com/marketing-cirujanos-plasticos-tijuana/">
@@ -840,6 +843,15 @@
     @media (max-width: 580px) {
       .stat-pills { grid-template-columns: 1fr 1fr; }
       .ps-hero-copy h1 { font-size: 1.85rem; white-space: normal; }
+      .ps-hero-copy .kicker-hero {
+        font-size: .73rem;
+        letter-spacing: .04em;
+        line-height: 1.2;
+        white-space: normal;
+        width: auto !important;
+        max-width: 100%;
+        padding: .32rem .65rem .32rem .55rem !important;
+      }
       .ps-hero-lead { line-height: 1.4; max-width: 100%; }
       .ps-kpi .kpi-strip { width: min(100%, 22.5rem); margin-inline: auto; }
       .ps-hero-ctas { width: 100%; gap: .7rem; }
@@ -888,6 +900,7 @@
           </div>
         </div>
 
+        <a href="/blog">Blog</a>
         <a href="#faq">FAQ</a>
         <a href="#contacto">Contactar</a>
       </nav>
@@ -923,6 +936,7 @@
         </div>
       </div>
 
+      <a href="/blog">Blog</a>
       <a href="#faq">FAQ</a>
       <a href="#contacto">Contactar</a>
       <a class="btn btn-primary" href="https://api.whatsapp.com/send?phone=526647149135" target="_blank" rel="noopener noreferrer">Solicitar Asesoría</a>
@@ -1492,11 +1506,26 @@
       var btn = document.querySelector('.nav-toggle');
       var nav = document.getElementById('mobile-nav-ps');
       if (!btn || !nav) return;
+
+      function closeMobileNav() {
+        btn.setAttribute('aria-expanded', 'false');
+        nav.hidden = true;
+        nav.querySelectorAll('.nav-dropdown.is-open').forEach(function(dd) {
+          dd.classList.remove('is-open');
+          var trigger = dd.querySelector('.nav-dropdown-trigger');
+          if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        });
+      }
+
       btn.addEventListener('click', function() {
         var open = nav.hidden;
         nav.hidden = !open;
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
       });
+
+      window.addEventListener('resize', function() {
+        if (window.innerWidth > 1100) closeMobileNav();
+      }, { passive: true });
     })();
 
     // ---- Dropdown menus ----
