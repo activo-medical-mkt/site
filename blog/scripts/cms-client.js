@@ -23,6 +23,18 @@
         return cfg;
     }
 
+    function buildApiUrl(pathSuffix) {
+        var cfg = assertCfg();
+        var base = new URL(cfg.apiBase, window.location.origin);
+
+        if (pathSuffix) {
+            var suffix = String(pathSuffix || '').replace(/^\/+/, '');
+            base.pathname = base.pathname.replace(/\/+$/, '') + '/' + suffix;
+        }
+
+        return base;
+    }
+
     async function request(url) {
         var cfg = assertCfg();
 
@@ -72,7 +84,7 @@
         var p = page || 1;
         var pp = perPage || 10;
 
-        var url = new URL(cfg.apiBase);
+        var url = buildApiUrl();
         url.searchParams.set('projectId', cfg.projectId);
         url.searchParams.set('page', String(p));
         url.searchParams.set('per_page', String(pp));
@@ -84,7 +96,7 @@
         var cfg = assertCfg();
         var safeSlug = encodeURIComponent(String(slug || '').trim());
 
-        var url = new URL(cfg.apiBase.replace(/\/+$/, '') + '/' + safeSlug);
+        var url = buildApiUrl(safeSlug);
         url.searchParams.set('projectId', cfg.projectId);
 
         return request(url.toString());
