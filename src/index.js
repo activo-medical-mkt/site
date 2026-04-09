@@ -5,21 +5,18 @@ export default {
 
     // Redirect bare /marketing-medico-tijuana to trailing slash
     if (path === "/marketing-medico-tijuana") {
-      return Response.redirect(new URL("/marketing-medico-tijuana/", url), 301);
+      return Response.redirect(url.origin + "/marketing-medico-tijuana/", 301);
     }
 
     // Blog listing
     if (path === "/blog" || path === "/blog/") {
-      return env.ASSETS.fetch(
-        new Request(new URL("/blog/blog/index.html", url), request)
-      );
+      return env.ASSETS.fetch(url.origin + "/blog/blog/index.html");
     }
 
-    // Blog article slug: /blog/<slug> (no dot = not a file, no sub-path)
-    if (path.startsWith("/blog/") && !path.slice(6).includes(".")) {
-      return env.ASSETS.fetch(
-        new Request(new URL("/blog/_blog-post/index.html", url), request)
-      );
+    // Blog article slug: /blog/<slug> — single segment, no file extension
+    const blogSlug = path.match(/^\/blog\/([^/]+)$/);
+    if (blogSlug && !blogSlug[1].includes(".")) {
+      return env.ASSETS.fetch(url.origin + "/blog/_blog-post/index.html");
     }
 
     // All other requests: serve static assets as-is
