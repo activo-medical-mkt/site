@@ -10,7 +10,8 @@
     "command": "node build.js"
   },
   "assets": {
-    "directory": "public"
+    "directory": "public",
+    "binding": "ASSETS"
   },
   "compatibility_flags": [
     "nodejs_compat"
