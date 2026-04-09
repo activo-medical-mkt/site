@@ -239,6 +239,23 @@
 }
 .mobile-nav .btn { margin-top: .4rem; width: 100%; justify-content: center; }
 
+/* When mobile menu is open, blend logo/hamburger bar with dropdown panel */
+@media (max-width: 1100px) {
+  .site-header:has(.nav-toggle[aria-expanded="true"]) {
+    background: rgba(5,17,38,0.97);
+    border-bottom-color: transparent;
+    box-shadow: none;
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+  }
+  .site-header:has(.nav-toggle[aria-expanded="true"]) .header-inner {
+    border-bottom: 0;
+  }
+  .site-header:has(.nav-toggle[aria-expanded="true"]) .mobile-nav {
+    border-top: 0;
+  }
+}
+
 
 /* ======================================
    HERO — Deep navy + glass liquid
@@ -805,9 +822,23 @@
   color: rgba(5,17,38,0.66);
 }
 .portfolio-slider { margin-top: clamp(1.2rem, 2.5vw, 2rem); }
+.portfolio-progress {
+  height: 3px;
+  background: rgba(255,255,255,0.10);
+  border-radius: 0 0 var(--r-xl) var(--r-xl);
+  overflow: hidden;
+}
+.portfolio-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #007f97 0%, #00c4d4 100%);
+  border-radius: 0 2px 2px 0;
+  transition: width linear;
+  will-change: width;
+}
 .portfolio-window {
   overflow: hidden;
-  border-radius: var(--r-xl);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
 }
 .portfolio-track {
   display: flex;

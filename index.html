@@ -576,6 +576,9 @@
                 </div>
               </article>
             </div>
+          </div><!-- /.portfolio-window -->
+          <div class="portfolio-progress" aria-hidden="true">
+            <div class="portfolio-progress-bar" id="portfolio-progress-bar"></div>
           </div>
         </div>
       </div>
@@ -626,24 +629,6 @@
         </div>
       </div>
     </section>
-
-    <!-- Interlink to location/specialty landing pages -->
-    <div style="background:linear-gradient(90deg,#f7f9fc 0%,#eef2f7 100%);border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;padding-block:1.1rem;">
-      <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;">
-        <p style="font-size:.88rem;color:#64748b;margin:0;"><strong style="color:#1e293b;">Presencia en Baja California</strong> &mdash; Estrategias especializadas para cl&iacute;nicas y especialistas en la frontera M&eacute;xico-EE.&nbsp;UU.</p>
-        <div style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;">
-          <a href="/marketing-medico-tijuana/" style="display:inline-flex;align-items:center;gap:.45rem;font-size:.85rem;font-weight:700;color:#007f97;text-decoration:none;white-space:nowrap;" title="Marketing m&eacute;dico en Tijuana">
-            Marketing m&eacute;dico en Tijuana
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </a>
-          <span style="width:1px;height:1.1em;background:#cbd5e1;display:inline-block;" aria-hidden="true"></span>
-          <a href="/marketing-cirujanos-plasticos-tijuana/" style="display:inline-flex;align-items:center;gap:.45rem;font-size:.85rem;font-weight:700;color:#007f97;text-decoration:none;white-space:nowrap;" title="Marketing para cirujanos pl&aacute;sticos en Tijuana">
-            Marketing para cirujanos pl&aacute;sticos
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </a>
-        </div>
-      </div>
-    </div>
 
     <!-- ==============================  CTA FINAL — gradient dark  ================================ -->
     <section class="section section-cta" id="contacto" data-nav-theme="light">
@@ -1132,12 +1117,18 @@
     function initPortfolioSlider() {
       var windowEl = document.querySelector('.portfolio-window');
       var track = document.querySelector('.portfolio-track');
+      var progressBar = document.getElementById('portfolio-progress-bar');
       if (!windowEl || !track) return;
 
       var slides = Array.from(track.children);
       var total = slides.length;
       var cur = 0;
       var timer;
+      var INTERVAL = 45000;
+      var rafId;
+      var startTime;
+      var paused = false;
+      var elapsed = 0;
 
       function setWidths() {
         var w = windowEl.offsetWidth;
@@ -1158,9 +1149,64 @@
         goTo((cur + 1) % total, true);
       }
 
+      /* ---- Progress bar animation via rAF ---- */
+      function tickProgress(ts) {
+        if (paused) return;
+        if (!startTime) startTime = ts - elapsed;
+        var pct = Math.min((ts - startTime) / INTERVAL * 100, 100);
+        if (progressBar) progressBar.style.width = pct + '%';
+        if (pct < 100) {
+          rafId = requestAnimationFrame(tickProgress);
+        }
+      }
+
+      function startProgress() {
+        elapsed = 0;
+        startTime = null;
+        cancelAnimationFrame(rafId);
+        if (progressBar) progressBar.style.transition = 'none';
+        if (progressBar) progressBar.style.width = '0%';
+        requestAnimationFrame(function() {
+          rafId = requestAnimationFrame(tickProgress);
+        });
+      }
+
+      function pauseProgress(ts) {
+        paused = true;
+        cancelAnimationFrame(rafId);
+        if (startTime) elapsed = performance.now() - startTime;
+      }
+
+      function resumeProgress() {
+        paused = false;
+        startTime = null;
+        rafId = requestAnimationFrame(tickProgress);
+      }
+
       function start() {
         clearInterval(timer);
-        timer = setInterval(next, 45000);
+        timer = setInterval(function() {
+          next();
+          startProgress();
+        }, INTERVAL);
+        startProgress();
+      }
+
+      /* Pause on hover */
+      var slider = document.querySelector('.portfolio-slider');
+      if (slider) {
+        slider.addEventListener('mouseenter', function() {
+          clearInterval(timer);
+          pauseProgress();
+        });
+        slider.addEventListener('mouseleave', function() {
+          var remaining = INTERVAL - elapsed;
+          resumeProgress();
+          timer = setInterval(function() {
+            next();
+            startProgress();
+          }, remaining);
+        });
       }
 
       window.addEventListener('resize', function() {

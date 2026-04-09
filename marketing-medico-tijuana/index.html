@@ -104,6 +104,42 @@
   <style>
     /* ---- Page-specific overrides ---- */
 
+    /* ---- Hero keyframes ---- */
+    @keyframes hero-fade-up {
+      from { opacity: 0; transform: translateY(36px); filter: blur(4px); }
+      to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
+    }
+    @keyframes gradient-shift {
+      0%,100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
+    }
+    @keyframes tj-parallax {
+      from { transform: scale(1.1) translateY(0); }
+      to   { transform: scale(1.1) translateY(-8%); }
+    }
+    @keyframes btn-pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(0,196,212,0); }
+      50%      { box-shadow: 0 0 0 10px rgba(0,196,212,0.22); }
+    }
+    @keyframes kicker-shine {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    /* ---- Stagger fade-in ---- */
+    .tjuana-hero-centered > * {
+      opacity: 0;
+      animation: hero-fade-up .85s cubic-bezier(.22,1,.36,1) forwards;
+    }
+    .tjuana-hero-centered > *:nth-child(1) { animation-delay: .05s; }
+    .tjuana-hero-centered > *:nth-child(2) { animation-delay: .22s; }
+    .tjuana-hero-centered > *:nth-child(3) { animation-delay: .42s; }
+    .tjuana-hero-centered > *:nth-child(4) { animation-delay: .60s; }
+    .tjuana-hero-centered > *:nth-child(5) { animation-delay: .76s; }
+    /* CTA primary pulse */
+    .tjuana-hero-ctas .btn-accent {
+      animation: btn-pulse 2.5s ease-in-out infinite;
+      animation-delay: 1.2s;
+    }
     /* === HERO: centered, stock image bg === */
     .tjuana-hero {
       position: relative;
@@ -121,6 +157,10 @@
       background-size: cover;
       background-position: center 30%;
       z-index: 0;
+      transform-origin: center bottom;
+      transform: scale(1.1);
+      animation: tj-parallax 12s ease-in-out alternate infinite;
+      will-change: transform;
     }
     .tjuana-hero-img::after {
       content: '';
@@ -149,10 +189,12 @@
     }
     .tjuana-hero-centered h1 em {
       font-style: normal;
-      background: linear-gradient(90deg, #00c4d4 0%, #5533ff 100%);
+      background: linear-gradient(270deg, #6b8fff, #00c4d4, #00d4e8, #6b8fff);
+      background-size: 300% 300%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      animation: gradient-shift 8s ease infinite;
     }
     .tjuana-hero-lead {
       color: rgba(255,255,255,0.72);
@@ -564,39 +606,7 @@
     }
 
     /* CTA / contact */
-    /* === Interlink banner === */
-    .interlink-banner {
-      background: linear-gradient(90deg, #051126 0%, #0b1e3e 100%);
-      border-top: 1px solid rgba(255,255,255,0.07);
-      border-bottom: 1px solid rgba(255,255,255,0.07);
-      padding-block: 1.25rem;
-    }
-    .interlink-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-    }
-    .interlink-inner p {
-      font-size: .88rem;
-      color: rgba(255,255,255,0.5);
-      margin: 0;
-    }
-    .interlink-inner p strong { color: rgba(255,255,255,0.75); font-weight: 600; }
-    .interlink-link {
-      display: inline-flex;
-      align-items: center;
-      gap: .45rem;
-      font-size: .85rem;
-      font-weight: 700;
-      color: #00c4d4;
-      text-decoration: none;
-      white-space: nowrap;
-      transition: color .2s;
-    }
-    .interlink-link:hover { color: #fff; }
-    .interlink-link svg { flex-shrink: 0; }
+    /* CTA / contact */
 
     /* === Local map embed section === */
     .section-local-map {
@@ -1139,24 +1149,6 @@
         </div>
       </div>
     </section>
-
-    <!-- ===== INTERLINK ===== -->
-    <div class="interlink-banner">
-      <div class="container interlink-inner">
-        <p><strong>Activo Medical Marketing</strong> &mdash; Agencia especializada en marketing m&eacute;dico digital para cl&iacute;nicas y especialistas en M&eacute;xico.</p>
-        <div style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;">
-          <a class="interlink-link" href="/" title="Agencia de marketing para m&eacute;dicos">
-            Agencia de marketing para m&eacute;dicos
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </a>
-          <span style="width:1px;height:1.1em;background:rgba(255,255,255,0.2);display:inline-block;" aria-hidden="true"></span>
-          <a class="interlink-link" href="/marketing-cirujanos-plasticos-tijuana/" title="Marketing para cirujanos pl&aacute;sticos en Tijuana">
-            Marketing para cirujanos pl&aacute;sticos en Tijuana
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </a>
-        </div>
-      </div>
-    </div>
 
     <!-- ===== LOCAL MAP SIGNAL ===== -->
     <section class="section-local-map" aria-label="Ubicación Tijuana">
