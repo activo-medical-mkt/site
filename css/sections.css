@@ -762,27 +762,6 @@
   color: rgba(5,17,38,0.72);
   font-size: .9rem;
 }
-.portfolio-dots {
-  display: flex;
-  gap: .45rem;
-  justify-content: center;
-  margin-top: 1rem;
-}
-.portfolio-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  border: none;
-  padding: 0;
-  background: rgba(5,17,38,0.22);
-  cursor: pointer;
-  transition: transform .25s ease, background .25s ease;
-}
-.portfolio-dot.active {
-  background: #00c4d4;
-  transform: scale(1.45);
-}
-
 
 /* ======================================
    AUTHORITY — sage / cool light
