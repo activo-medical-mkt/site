@@ -4,7 +4,7 @@
     function getCfg() {
         var cfg = window.__CMS_CONFIG__ || {};
         return {
-            apiBase: String(cfg.apiBase || 'https://app.seermantic.com/api/posts').trim(),
+            apiBase: String(cfg.apiBase || '/api/cms/posts').trim(),
             projectId: String(cfg.projectId || '65bb6d01').trim(),
             publicToken: String(cfg.publicToken || '').trim()
         };

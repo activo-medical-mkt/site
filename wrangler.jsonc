@@ -13,6 +13,10 @@
     "directory": "public",
     "binding": "ASSETS"
   },
+  "vars": {
+    "CMS_API_BASE": "https://app.seermantic.com/api/posts",
+    "CMS_PROJECT_ID": "65bb6d01"
+  },
   "compatibility_flags": [
     "nodejs_compat"
   ]
