@@ -1282,6 +1282,28 @@
 .field select option { background: #0c1f3d; color: #fff; }
 .contact-form .btn { margin-top: .4rem; width: 100%; }
 
+/* Form Ajax feedback */
+.form-message {
+  display: none;
+  margin-top: .75rem;
+  padding: .75rem 1rem;
+  border-radius: .5rem;
+  font-size: .95rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.form-message:not(:empty) { display: block; }
+.form-success {
+  background: rgba(46,204,113,0.12);
+  color: #2ecc71;
+  border: 1px solid rgba(46,204,113,0.28);
+}
+.form-error {
+  background: rgba(231,76,60,0.12);
+  color: #e74c3c;
+  border: 1px solid rgba(231,76,60,0.28);
+}
+
 
 /* ======================================
    FOOTER — very dark navy

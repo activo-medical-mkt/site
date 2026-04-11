@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
@@ -819,7 +819,7 @@
     @media (max-width: 860px) {
       .ps-hero-body { padding-inline: clamp(1rem, 4vw, 2rem); }
       .ps-hero-visual { display: none; }
-      /* Show image as dark bg on mobile so it’s not just flat navy */
+      /* Show image as dark bg on mobile so it's not just flat navy */
       .ps-hero {
         background-image:
           linear-gradient(180deg, rgba(5,17,38,0.55) 0%, rgba(5,17,38,0.75) 45%, rgba(5,17,38,0.95) 100%),
@@ -839,6 +839,59 @@
     @media (max-width: 720px) {
       .local-map-inner { grid-template-columns: 1fr; }
       .local-map-embed { height: 260px; }
+    }
+    /* ===== Services: horizontal scroll-snap slider on mobile ===== */
+    @media (max-width: 700px) {
+      .service-ps-bento {
+        display: flex;
+        flex-direction: row;
+        overflow-x: scroll;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-bottom: .5rem;
+        align-items: stretch;
+      }
+      .service-ps-bento::-webkit-scrollbar { display: none; }
+      /* Unwrap ticker layers so cards sit as direct flex siblings */
+      .service-ps-ticker-wrap,
+      .service-ps-ticker { display: contents; }
+      /* Uniform card size */
+      .service-ps-featured,
+      .service-ps-small {
+        flex: 0 0 82vw;
+        max-width: 320px;
+        height: auto;
+        min-height: 260px;
+        scroll-snap-align: start;
+      }
+      .service-ps-featured { border-color: rgba(0,127,151,0.55); }
+      /* Hide JS-cloned duplicate cards */
+      .service-ps-ticker > article:nth-child(n+6) { display: none !important; }
+      /* Dot indicators */
+      .svc-ps-dots {
+        display: flex;
+        justify-content: center;
+        gap: .5rem;
+        margin-top: 1rem;
+      }
+      .svc-ps-dot {
+        width: 7px; height: 7px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.22);
+        flex-shrink: 0;
+        transition: background .2s, transform .2s;
+        cursor: pointer;
+      }
+      .svc-ps-dot.active {
+        background: #00c4d4;
+        transform: scale(1.3);
+      }
+    }
+    @media (min-width: 701px) {
+      .svc-ps-dots { display: none; }
     }
     @media (max-width: 580px) {
       .stat-pills { grid-template-columns: 1fr 1fr; }
@@ -863,81 +916,7 @@
   <a class="skip-link" href="#contenido">Saltar al contenido principal</a>
 
   <!-- HEADER -->
-  <header class="site-header" id="top">
-    <div class="container header-inner">
-      <a class="brand" href="../index.html" aria-label="Activo Medical Marketing – Inicio">
-        <img src="../Assets/Logos/activo-logo-white.png" width="130" height="38" alt="Activo Medical Marketing" decoding="async">
-      </a>
-      <nav class="nav" aria-label="Principal">
-        <a href="#servicios">Servicios</a>
-
-        <div class="nav-dropdown" id="dd-loc-ps">
-          <button class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">
-            Ubicaciones
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="nav-dropdown-menu" role="menu">
-            <span class="menu-label">Dónde operamos</span>
-            <a href="/marketing-medico-tijuana/" role="menuitem">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
-              Marketing Médico Tijuana
-            </a>
-          </div>
-        </div>
-
-        <div class="nav-dropdown" id="dd-esp-ps">
-          <button class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">
-            Prácticas
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="nav-dropdown-menu" role="menu">
-            <span class="menu-label">Por especialidad médica</span>
-            <a href="/marketing-cirujanos-plasticos-tijuana/" role="menuitem" aria-current="page">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
-              Cirujanos Plásticos &mdash; Tijuana
-            </a>
-          </div>
-        </div>
-
-        <a href="/blog">Blog</a>
-        <a href="#contacto">Contactar</a>
-      </nav>
-      <a class="btn btn-primary has-icon" href="https://api.whatsapp.com/send?phone=526647149135" target="_blank" rel="noopener noreferrer">
-        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
-        Solicitar Asesoría
-      </a>
-      <button class="nav-toggle" aria-expanded="false" aria-controls="mobile-nav-ps" aria-label="Abrir menú">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-    <nav class="mobile-nav" id="mobile-nav-ps" aria-label="Menú móvil" hidden>
-      <a href="#servicios">Servicios</a>
-
-      <div class="nav-dropdown" id="dd-loc-ps-m">
-        <button class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">
-          Ubicaciones
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="nav-dropdown-menu" role="menu">
-          <a href="/marketing-medico-tijuana/" role="menuitem">Marketing Médico Tijuana</a>
-        </div>
-      </div>
-
-      <div class="nav-dropdown" id="dd-esp-ps-m">
-        <button class="nav-dropdown-trigger" aria-expanded="false" aria-haspopup="true">
-          Prácticas
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="nav-dropdown-menu" role="menu">
-          <a href="/marketing-cirujanos-plasticos-tijuana/" role="menuitem">Cirujanos Plásticos &mdash; Tijuana</a>
-        </div>
-      </div>
-
-      <a href="/blog">Blog</a>
-      <a href="#contacto">Contactar</a>
-      <a class="btn btn-primary" href="https://api.whatsapp.com/send?phone=526647149135" target="_blank" rel="noopener noreferrer">Solicitar Asesoría</a>
-    </nav>
-  </header>
+  <div id="site-header-placeholder" data-mobile-nav-id="mobile-nav-ps"></div>
 
   <main id="contenido">
 
@@ -984,7 +963,7 @@
           <div class="kpi-div" aria-hidden="true"></div>
           <div class="kpi-item"><strong>+340%</strong><span>Consultas promedio / cliente</span></div>
           <div class="kpi-div" aria-hidden="true"></div>
-          <div class="kpi-item"><strong>–62%</strong><span>Costo por paciente</span></div>
+          <div class="kpi-item"><strong>↓62%</strong><span>Costo por paciente</span></div>
           <div class="kpi-div" aria-hidden="true"></div>
           <div class="kpi-item"><strong>Top 3</strong><span>Google Maps en 90 días</span></div>
         </div>
@@ -1053,7 +1032,7 @@
             </svg>
           </div>
           <div class="stat-pills">
-            <div class="stat-pill"><strong>–65%</strong><span>Costo vs. EE. UU.</span></div>
+            <div class="stat-pill"><strong>↓65%</strong><span>Costo vs. EE. UU.</span></div>
             <div class="stat-pill"><strong>400k+</strong><span>Pacientes / año</span></div>
             <div class="stat-pill"><strong>EN+ES</strong><span>Estrategia bilingüe</span></div>
             <div class="stat-pill"><strong>94%</strong><span>Retención</span></div>
@@ -1091,7 +1070,7 @@
                   <rect x="38" y="14" width="118" height="9" rx="4.5" fill="rgba(255,255,255,0.18)"/>
                   <!-- Result 1: our client highlighted -->
                   <rect x="10" y="36" width="240" height="22" rx="6" fill="rgba(0,196,212,0.14)" stroke="rgba(0,196,212,0.45)" stroke-width="1"/>
-                  <text x="22" y="51" fill="#00c4d4" font-family="Maven Pro,sans-serif" font-size="9" font-weight="800">★ #1</text>
+                  <text x="22" y="51" fill="#00c4d4" font-family="Maven Pro,sans-serif" font-size="9" font-weight="800">· #1</text>
                   <rect x="52" y="41" width="84" height="8" rx="4" fill="rgba(255,255,255,0.28)"/>
                   <rect x="144" y="42" width="48" height="6" rx="3" fill="rgba(0,196,212,0.35)"/>
                   <!-- Result 2 -->
@@ -1149,17 +1128,17 @@
                   <!-- Social post mockup left -->
                   <rect x="16" y="10" width="88" height="100" rx="10" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
                   <rect x="20" y="24" width="80" height="54" rx="6" fill="rgba(196,122,207,0.15)" stroke="rgba(196,122,207,0.25)" stroke-width="1"/>
-                  <text x="60" y="56" fill="rgba(255,255,255,0.18)" font-family="Maven Pro,sans-serif" font-size="24" text-anchor="middle">✦</text>
+                  <text x="60" y="56" fill="rgba(255,255,255,0.18)" font-family="Maven Pro,sans-serif" font-size="24" text-anchor="middle">♥</text>
                   <circle cx="32" cy="18" r="5.5" fill="rgba(0,196,212,0.3)" stroke="rgba(0,196,212,0.5)" stroke-width="1"/>
-                  <text x="24" y="93" fill="rgba(255,255,255,0.4)" font-family="Maven Pro,sans-serif" font-size="8">♥ 2.4k  💬 87</text>
+                  <text x="24" y="93" fill="rgba(255,255,255,0.4)" font-family="Maven Pro,sans-serif" font-size="8">2.4k  ↑ 87</text>
                   <!-- Reviews block top right -->
                   <rect x="120" y="10" width="126" height="46" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-                  <text x="130" y="27" fill="rgba(255,196,0,0.9)" font-family="Maven Pro,sans-serif" font-size="11">★★★★★</text>
+                  <text x="130" y="27" fill="rgba(255,196,0,0.9)" font-family="Maven Pro,sans-serif" font-size="11">·.·.·</text>
                   <rect x="130" y="33" width="64" height="6" rx="3" fill="rgba(255,255,255,0.12)"/>
                   <rect x="130" y="43" width="42" height="5" rx="2.5" fill="rgba(255,255,255,0.07)"/>
                   <!-- Verified testimonial block bottom right -->
                   <rect x="120" y="62" width="126" height="48" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-                  <text x="130" y="78" fill="rgba(0,196,212,0.85)" font-family="Maven Pro,sans-serif" font-size="8.5" font-weight="700">Patient Verified ✓</text>
+                  <text x="130" y="78" fill="rgba(0,196,212,0.85)" font-family="Maven Pro,sans-serif" font-size="8.5" font-weight="700">Patient Verified ✔</text>
                   <rect x="130" y="84" width="92" height="5" rx="2.5" fill="rgba(255,255,255,0.1)"/>
                   <rect x="130" y="93" width="72" height="5" rx="2.5" fill="rgba(255,255,255,0.07)"/>
                   <rect x="130" y="102" width="52" height="5" rx="2.5" fill="rgba(255,255,255,0.05)"/>
@@ -1384,16 +1363,18 @@
           <h2>Solicita un diagnóstico gratuito de tu presencia digital como cirujano plástico en Tijuana</h2>
           <p>Analizamos tu posicionamiento actual en Google, los procedimientos con mayor demanda digital en tu zona y las oportunidades de captación más claras. Sin costo, sin compromiso.</p>
           <ul class="promise-ps">
-            <li><span class="check" aria-hidden="true">✓</span> Diagnóstico de visibilidad digital en 48 h</li>
-            <li><span class="check" aria-hidden="true">✓</span> Análisis de competencia por procedimiento</li>
-            <li><span class="check" aria-hidden="true">✓</span> Plan de acción bilingüe ES&nbsp;+&nbsp;EN para tu especialidad</li>
-            <li><span class="check" aria-hidden="true">✓</span> Sin contratos anuales forzados en el primer mes</li>
+            <li><span class="check" aria-hidden="true">✔</span> Diagnóstico de visibilidad digital en 48 h</li>
+            <li><span class="check" aria-hidden="true">✔</span> Análisis de competencia por procedimiento</li>
+            <li><span class="check" aria-hidden="true">✔</span> Plan de acción bilingüe ES&nbsp;+&nbsp;EN para tu especialidad</li>
+            <li><span class="check" aria-hidden="true">✔</span> Sin contratos anuales forzados en el primer mes</li>
           </ul>
         </div>
 
         <form class="contact-form glass-dark" method="post" action="https://formspree.io/f/xzdkodev" aria-label="Formulario de diagnóstico para cirujanos plásticos en Tijuana">
           <h3 class="h-white form-title">Analizar mi práctica de cirugía plástica</h3>
           <input type="hidden" name="_landing" value="cirujanos-plasticos-tijuana">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;pointer-events:none;">
 
           <label class="field">
             <span>Nombre del doctor o clínica</span>
@@ -1401,7 +1382,7 @@
           </label>
           <label class="field">
             <span>Procedimientos principales</span>
-            <input type="text" name="procedimientos" required placeholder="Rinoplastia, mamoplastia, abdominoplastia…">
+            <input type="text" name="procedimientos" required placeholder="Rinoplastia, mamoplastia, abdominoplastia—">
           </label>
           <label class="field">
             <span>Número de teléfono</span>
@@ -1429,6 +1410,7 @@
             <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             Solicitar diagnóstico gratuito
           </button>
+          <div class="form-message" role="status" aria-live="polite"></div>
         </form>
       </div>
     </section>
@@ -1436,128 +1418,12 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="site-footer">
-    <div class="container footer-grid">
-      <div class="footer-brand-col">
-        <img src="../Assets/Logos/activo-logo-white.png" width="130" height="40" alt="Activo Medical Marketing" loading="lazy" decoding="async">
-        <p>Agencia especializada en marketing digital para médicos, clínicas y especialistas. Tijuana, México y Latinoamérica.</p>
-      </div>
-      <div>
-        <h3>Servicios</h3>
-        <ul>
-          <li><a href="#servicios">SEO para cirugía plástica</a></li>
-          <li><a href="#servicios">Google Ads estética</a></li>
-          <li><a href="#servicios">Sitio web para cirujanos</a></li>
-          <li><a href="#servicios">Reputación y reseñas</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3>Explora</h3>
-        <ul>
-          <li><a href="../">Inicio</a></li>
-          <li><a href="../marketing-medico-tijuana/">Marketing médico Tijuana</a></li>
-          <li><a href="#faq">Preguntas frecuentes</a></li>
-          <li><a href="#contacto">Contacto</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3>Mantente actualizado</h3>
-        <p>Estrategias de marketing médico, sin spam.</p>
-        <form class="newsletter" method="post" action="#">
-          <label for="ne-email-ps" class="sr-only">Correo profesional</label>
-          <input id="ne-email-ps" type="email" name="email" placeholder="doctor@ejemplo.com" autocomplete="email" required>
-          <button class="btn btn-accent btn-sm" type="submit">Suscribirme</button>
-        </form>
-      </div>
-    </div>
-    <div class="container footer-bottom">
-      <small>&copy; <span id="fyear-ps">2026</span> Activo Medical Marketing. Todos los derechos reservados.</small>
-      <nav aria-label="Legal">
-        <a href="/politica-de-privacidad/">Privacidad</a>
-        <a href="/terminos-de-uso/">Términos de uso</a>
-        <a href="/sitemap.xml">sitemap.xml</a>
-      </nav>
-    </div>
-  </footer>
+  <div id="site-footer-placeholder"></div>
 
-  <!-- WhatsApp widget -->
-  <div class="wa-widget" id="wa-widget">
-    <div class="wa-panel" id="wa-panel" hidden>
-      <div class="wa-panel-head">
-        <img src="../Assets/WhatsApp.svg.png" alt="WhatsApp" width="28" height="28" loading="lazy" decoding="async">
-        <div>
-          <strong>Iniciar una conversación</strong>
-          <p>¡Hola! Escríbenos y te responderemos lo antes posible.</p>
-        </div>
-      </div>
-      <a class="wa-panel-cta" href="https://api.whatsapp.com/send?phone=526647149135" target="_blank" rel="noopener noreferrer">Abrir WhatsApp</a>
-    </div>
-    <button class="wa-fab" id="wa-fab" type="button" aria-expanded="false" aria-controls="wa-panel" aria-label="Abrir chat de WhatsApp">
-      <img src="../Assets/WhatsApp.svg.png" alt="WhatsApp" width="30" height="30" loading="lazy" decoding="async">
-    </button>
-  </div>
+  <script src="/js/shared-layout.js"></script>
+  <script src="/js/form-ajax.js"></script>
 
   <script>
-    // ---- Mobile nav ----
-    (function() {
-      var btn = document.querySelector('.nav-toggle');
-      var nav = document.getElementById('mobile-nav-ps');
-      if (!btn || !nav) return;
-
-      function closeMobileNav() {
-        btn.setAttribute('aria-expanded', 'false');
-        nav.hidden = true;
-        nav.querySelectorAll('.nav-dropdown.is-open').forEach(function(dd) {
-          dd.classList.remove('is-open');
-          var trigger = dd.querySelector('.nav-dropdown-trigger');
-          if (trigger) trigger.setAttribute('aria-expanded', 'false');
-        });
-      }
-
-      btn.addEventListener('click', function() {
-        var open = nav.hidden;
-        nav.hidden = !open;
-        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      });
-
-      window.addEventListener('resize', function() {
-        if (window.innerWidth > 1100) closeMobileNav();
-      }, { passive: true });
-    })();
-
-    // ---- Dropdown menus ----
-    (function() {
-      document.querySelectorAll('.nav-dropdown-trigger').forEach(function(btn) {
-        btn.addEventListener('click', function(e) {
-          var dd = btn.closest('.nav-dropdown');
-          var isOpen = dd.classList.contains('is-open');
-          document.querySelectorAll('.nav-dropdown.is-open').forEach(function(o) {
-            o.classList.remove('is-open');
-            o.querySelector('.nav-dropdown-trigger').setAttribute('aria-expanded', 'false');
-          });
-          if (!isOpen) {
-            dd.classList.add('is-open');
-            btn.setAttribute('aria-expanded', 'true');
-          }
-          e.stopPropagation();
-        });
-      });
-      document.addEventListener('click', function() {
-        document.querySelectorAll('.nav-dropdown.is-open').forEach(function(o) {
-          o.classList.remove('is-open');
-          o.querySelector('.nav-dropdown-trigger').setAttribute('aria-expanded', 'false');
-        });
-      });
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          document.querySelectorAll('.nav-dropdown.is-open').forEach(function(o) {
-            o.classList.remove('is-open');
-            o.querySelector('.nav-dropdown-trigger').setAttribute('aria-expanded', 'false');
-          });
-        }
-      });
-    })();
-
     // ---- Header scroll class ----
     var hdr = document.querySelector('.site-header');
     var SCROLL_THRESHOLD = 20;
@@ -1636,11 +1502,50 @@
       startAuto();
     })();
 
-    // ---- Services ticker ----
+    // ---- Services ticker (desktop) / dot slider (mobile) ----
     (function() {
+      var ticker = document.getElementById('svcTicker');
+      if (!ticker) return;
+      var bento = ticker.closest('.service-ps-bento');
+
+      // Mobile: horizontal scroll-snap with dot indicators
+      if (window.innerWidth <= 700) {
+        if (!bento) return;
+        var cards = Array.from(bento.querySelectorAll('.service-ps-featured, .service-ps-small:not(.svc-clone)'));
+        // Build dots container
+        var dotsEl = document.createElement('div');
+        dotsEl.className = 'svc-ps-dots';
+        cards.forEach(function(_, i) {
+          var dot = document.createElement('button');
+          dot.className = 'svc-ps-dot' + (i === 0 ? ' active' : '');
+          dot.setAttribute('aria-label', 'Ir a servicio ' + (i + 1));
+          dot.addEventListener('click', function() {
+            cards[i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+          });
+          dotsEl.appendChild(dot);
+        });
+        bento.parentNode.insertBefore(dotsEl, bento.nextSibling);
+        var dots = Array.from(dotsEl.children);
+        // Update active dot on scroll
+        var ticking = false;
+        bento.addEventListener('scroll', function() {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(function() {
+            var scrollLeft = bento.scrollLeft;
+            var cardW = cards[0] ? cards[0].offsetWidth + 16 : 1;
+            var idx = Math.round(scrollLeft / cardW);
+            idx = Math.max(0, Math.min(idx, dots.length - 1));
+            dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
+            ticking = false;
+          });
+        }, { passive: true });
+        return;
+      }
+
+      // Desktop: vertical auto-scroll ticker
       var CARD_H = 220, GAP = 20, STEP = CARD_H + GAP;
       var ANIM = 520, PAUSE = 2600;
-      var ticker = document.getElementById('svcTicker');
       if (!ticker) return;
       var origCards = Array.from(ticker.children);
       var N = origCards.length;
@@ -1674,18 +1579,6 @@
       if (el) el.textContent = new Date().getFullYear();
     })();
 
-    // ---- WA widget ----
-    (function() {
-      var fab   = document.getElementById('wa-fab');
-      var panel = document.getElementById('wa-panel');
-      if (!fab || !panel) return;
-      fab.addEventListener('click', function() {
-        var open = panel.hidden;
-        panel.hidden = !open;
-        fab.setAttribute('aria-expanded', open ? 'true' : 'false');
-      });
-    })();
-
     // ---- Scroll reveal ----
     (function() {
       var items = document.querySelectorAll(
@@ -1711,3 +1604,4 @@
   </script>
 </body>
 </html>
+
