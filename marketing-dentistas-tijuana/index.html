@@ -154,6 +154,22 @@
       overflow-x: clip;
       overflow-y: visible;
     }
+    /* Page-level gradient — eliminates container seam on any screen size */
+    .dt-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      background: linear-gradient(
+        to right,
+        rgba(5,17,38,1)   0%,
+        rgba(5,17,38,1)   45%,
+        rgba(5,17,38,0.9) 49%,
+        rgba(5,17,38,0.5) 60%,
+        rgba(5,17,38,0)   74%
+      );
+    }
     @keyframes dt-orb-a {
       0%   { transform: translate(0,0) scale(1); opacity: 1; }
       50%  { transform: translate(80px,-60px) scale(1.2); opacity: .7; }
@@ -180,7 +196,7 @@
       position: absolute;
       inset: 0;
       pointer-events: none;
-      z-index: 0;
+      z-index: 4;
     }
     .dt-hero-orbs::before {
       content: '';
@@ -205,7 +221,7 @@
     .dt-hero-body {
       flex: 1;
       position: relative;
-      z-index: 3;
+      z-index: 5; /* above .dt-hero::after */
       width: min(1400px, 100% - 3rem);
       margin-inline: auto;
       display: flex;
@@ -250,21 +266,7 @@
       object-fit: cover;
       object-position: center top;
     }
-    .dt-hero-visual::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      background: linear-gradient(
-        to right,
-        rgba(5,17,38,1)   0%,
-        rgba(5,17,38,1)   10%,
-        rgba(5,17,38,0.85) 25%,
-        rgba(5,17,38,0.55) 42%,
-        rgba(5,17,38,0.2)  60%,
-        rgba(5,17,38,0)    75%
-      );
-    }
+    .dt-hero-visual::before { display: none; /* gradient handled by .dt-hero::after */ }
     .dt-hero-visual::after {
       content: '';
       position: absolute;
@@ -1360,7 +1362,6 @@
             </select>
           </label>
 
-          <div class="cf-turnstile" data-sitekey="0x4AAAAAAC1hiFONSvY2jnAM"></div>
           <button class="btn btn-accent has-icon" type="submit">
             <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             Solicitar diagnóstico gratuito
@@ -1377,7 +1378,7 @@
 
   <script src="/js/shared-layout.js"></script>
   <script src="/js/form-ajax.js"></script>
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
 
   <script>
     // ---- Header scroll class ----
