@@ -1283,6 +1283,7 @@
 .contact-form .btn { margin-top: .4rem; width: 100%; }
 
 /* Form Ajax feedback */
+.cf-turnstile { margin: .5rem 0; }
 .form-message {
   display: none;
   margin-top: .75rem;

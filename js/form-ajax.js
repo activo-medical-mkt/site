@@ -50,6 +50,8 @@
         .then(function () {
           btn.disabled = false;
           btn.innerHTML = btnHTML;
+          // Reset Turnstile token so user can resubmit if needed
+          if (window.turnstile) window.turnstile.reset();
         });
     });
   });
