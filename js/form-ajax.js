@@ -10,6 +10,15 @@
 
       var btn = form.querySelector('[type="submit"]');
       var btnHTML = btn.innerHTML;
+
+      // Guard: wait for Turnstile token before submitting
+      var tokenInput = form.querySelector('[name="cf-turnstile-response"]');
+      if (tokenInput && !tokenInput.value) {
+        msgEl.textContent = 'Por favor, espera un momento y vuelve a intentarlo.';
+        msgEl.className = 'form-message form-error';
+        return;
+      }
+
       btn.disabled = true;
       btn.textContent = 'Enviando\u2026';
       msgEl.textContent = '';
