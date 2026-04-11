@@ -9,64 +9,8 @@
     var header = document.querySelector('.site-header');
     if (!header) return;
 
-    var toggle = header.querySelector('.nav-toggle');
-    var mobileId = toggle ? toggle.getAttribute('aria-controls') : null;
-    var mobileMenu = mobileId ? document.getElementById(mobileId) : null;
-
-    function setMobileOpen(isOpen) {
-        if (!toggle || !mobileMenu) return;
-        toggle.setAttribute('aria-expanded', String(isOpen));
-        mobileMenu.hidden = !isOpen;
-    }
-
-    if (toggle && mobileMenu) {
-        toggle.addEventListener('click', function () {
-            var isOpen = toggle.getAttribute('aria-expanded') === 'true';
-            setMobileOpen(!isOpen);
-        });
-
-        mobileMenu.querySelectorAll('a').forEach(function (link) {
-            link.addEventListener('click', function () { setMobileOpen(false); });
-        });
-    }
-
-    function closeAllDropdowns() {
-        header.querySelectorAll('.nav-dropdown.is-open').forEach(function (dd) {
-            dd.classList.remove('is-open');
-            var trigger = dd.querySelector('.nav-dropdown-trigger');
-            if (trigger) trigger.setAttribute('aria-expanded', 'false');
-        });
-    }
-
-    header.querySelectorAll('.nav-dropdown').forEach(function (dd) {
-        var trigger = dd.querySelector('.nav-dropdown-trigger');
-        if (!trigger) return;
-
-        trigger.addEventListener('click', function (event) {
-            event.preventDefault();
-            var isOpen = dd.classList.contains('is-open');
-            closeAllDropdowns();
-            if (!isOpen) {
-                dd.classList.add('is-open');
-                trigger.setAttribute('aria-expanded', 'true');
-            }
-        });
-    });
-
-    document.addEventListener('click', function (event) {
-        if (!header.contains(event.target)) {
-            closeAllDropdowns();
-            setMobileOpen(false);
-        }
-    });
-
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') {
-            closeAllDropdowns();
-            setMobileOpen(false);
-        }
-    });
-
+    // Nav toggle + dropdowns handled by shared-layout.js
+    // Only scroll/dark-mode detection is needed here
     var darkSections = document.querySelectorAll('[data-nav-dark]');
     function onScroll() {
         header.classList.toggle('scrolled', window.scrollY > 16);
