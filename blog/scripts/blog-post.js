@@ -449,7 +449,15 @@
         var article = document.getElementById('postArticle');
         if (article) {
             var tags = (post.tags || []).map(function (t) {
-                return '<a href="/blog" class="post-tag">' + esc(t) + '</a>';
+                // Decode any HTML entities (e.g. &nbsp;) that may have been saved in tag text
+                var decoded = t.replace(/&nbsp;/gi, ' ')
+                               .replace(/&amp;/gi, '&')
+                               .replace(/&lt;/gi, '<')
+                               .replace(/&gt;/gi, '>')
+                               .replace(/&quot;/gi, '"')
+                               .replace(/&#(\d+);/g, function(_, n) { return String.fromCharCode(n); })
+                               .trim();
+                return '<a href="/blog" class="post-tag">' + esc(decoded) + '</a>';
             }).join('');
 
             article.innerHTML =
