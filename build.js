@@ -113,10 +113,10 @@ async function convertImages() {
   }
   console.log(`🖼  Images → WebP (${imgCount} converted)`);
 
-  // Rewrite HTML src/srcset references
-  const htmlFiles = allFiles.filter(f => f.endsWith('.html'));
+  // Rewrite HTML and JS src/srcset references
+  const rewriteFiles = allFiles.filter(f => f.endsWith('.html') || f.endsWith('.js'));
   let htmlCount = 0;
-  for (const htmlPath of htmlFiles) {
+  for (const htmlPath of rewriteFiles) {
     let html = fs.readFileSync(htmlPath, 'utf8');
     let changed = false;
 
@@ -135,7 +135,7 @@ async function convertImages() {
       htmlCount++;
     }
   }
-  console.log(`📝 HTML updated (${htmlCount} files)`);
+  console.log(`📝 HTML+JS updated (${htmlCount} files)`);
 }
 
 // Run async steps
