@@ -1372,7 +1372,7 @@
   transition: color .15s, border-color .15s, background .15s;
 }
 .footer-social a:hover { color: #fff; border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); }
-.footer-social svg { width: 14px; height: 14px; flex-shrink: 0; }
+.footer-social svg { width: 14px; height: 14px; flex-shrink: 0; fill: currentColor; }
 
 /* About section social links */
 .about-social { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; margin-top: 1.2rem; }
@@ -1386,7 +1386,7 @@
   transition: color .15s, border-color .15s, background .15s;
 }
 .about-social a:hover { color: #00c4d4; border-color: rgba(0,196,212,0.45); background: rgba(0,196,212,0.08); }
-.about-social svg { width: 13px; height: 13px; flex-shrink: 0; }
+.about-social svg { width: 13px; height: 13px; flex-shrink: 0; fill: currentColor; }
 
 
 /* ======================================
