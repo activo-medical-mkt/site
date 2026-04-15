@@ -19,6 +19,9 @@
   <meta name="twitter:description" content="Estrategias bilingües de alto impacto para clínicas y médicos en Tijuana. Captación de pacientes locales y transfronterizos de California.">
   <meta name="twitter:image" content="https://activomedical.com/Assets/Images/advice-doctor-touching-ipad.jpg">
   <link rel="canonical" href="https://activomedical.com/marketing-medico-tijuana/">
+  <link rel="alternate" hreflang="es" href="https://activomedical.com/marketing-medico-tijuana/">
+  <link rel="alternate" hreflang="es-MX" href="https://activomedical.com/marketing-medico-tijuana/">
+  <link rel="alternate" hreflang="x-default" href="https://activomedical.com/marketing-medico-tijuana/">
   <link rel="icon" href="../Assets/Logos/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="../Assets/Logos/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="48x48" href="../Assets/Logos/favicon-48x48.png">
@@ -61,7 +64,28 @@
           "longitude": -117.0215
         },
         "url": "https://activomedical.com/marketing-medico-tijuana/",
-        "areaServed": ["Tijuana", "Baja California", "San Diego", "Southern California"]
+        "areaServed": ["Tijuana", "Baja California", "San Diego", "Southern California"],
+        "sameAs": [
+          "https://share.google/NoXnMDix4YjGrSeWL",
+          "https://www.facebook.com/ActivoMedical/",
+          "https://www.instagram.com/activomedical",
+          "https://www.linkedin.com/company/activo-medical",
+          "https://www.pinterest.com/activomedical/",
+          "https://medium.com/@activomedical"
+        ],
+        "founder": {
+          "@type": "Person",
+          "name": "Joshua Ramírez",
+          "jobTitle": "Especialista en Marketing Digital",
+          "knowsAbout": ["SEO", "Google Ads", "Search Marketing", "Medical Marketing", "Local SEO"],
+          "hasCredential": [
+            { "@type": "EducationalOccupationalCredential", "credentialCategory": "degree", "name": "Licenciatura en Administración de Empresas" },
+            { "@type": "EducationalOccupationalCredential", "credentialCategory": "degree", "name": "Licenciatura en Comercio Internacional" },
+            { "@type": "EducationalOccupationalCredential", "credentialCategory": "degree", "name": "Maestría en Mercadotecnia" },
+            { "@type": "EducationalOccupationalCredential", "credentialCategory": "certification", "name": "Google Ads Certification" },
+            { "@type": "EducationalOccupationalCredential", "credentialCategory": "certification", "name": "Google Analytics 4 Certification" }
+          ]
+        }
       },
       {
         "@type": "BreadcrumbList",
@@ -729,6 +753,117 @@
         padding-inline: .9rem;
       }
     }
+
+    /* About / Founder TJ */
+    .section-about-tj {
+      background: linear-gradient(170deg, #081830 0%, #051126 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .section-about-tj::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(70% 70% at 15% 50%, rgba(0,127,151,.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .about-tj-grid {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 4rem;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
+    .about-tj-photo-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: sticky;
+      top: 5rem;
+    }
+    .about-tj-photo {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      object-position: center top;
+      border-radius: var(--r-xl);
+      border: 1px solid rgba(0,196,212,0.3);
+      box-shadow: 0 0 0 5px rgba(0,196,212,0.06), 0 24px 56px rgba(0,0,0,0.45);
+    }
+    .about-tj-name {
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 1rem 0 .2rem;
+    }
+    .about-tj-role {
+      color: rgba(255,255,255,.4);
+      font-size: .8rem;
+    }
+    .about-tj-copy h2 { color: #fff; }
+    .about-tj-copy > p {
+      color: rgba(255,255,255,.65);
+      line-height: 1.8;
+      font-size: .95rem;
+      margin-bottom: 1.1rem;
+    }
+    .cred-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      margin: 1.75rem 0;
+    }
+    .cred-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--r-pill);
+      padding: .38rem .85rem;
+      font-size: .8rem;
+      color: rgba(255,255,255,.7);
+      font-weight: 600;
+    }
+    .cred-chip svg { color: rgba(255,255,255,.4); flex-shrink: 0; }
+    .cred-chip.cred-google {
+      border-color: rgba(0,196,212,0.35);
+      background: rgba(0,196,212,0.08);
+      color: #00c4d4;
+    }
+    .cred-chip.cred-google svg { color: #00c4d4; }
+    .about-stat-row {
+      display: flex;
+      gap: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .about-stat strong {
+      display: block;
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: #00c4d4;
+      line-height: 1;
+    }
+    .about-stat span {
+      display: block;
+      margin-top: .3rem;
+      font-size: .78rem;
+      color: rgba(255,255,255,.4);
+    }
+    @media (max-width: 900px) {
+      .about-tj-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .about-tj-photo-wrap {
+        position: static;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .about-tj-photo { width: 140px; aspect-ratio: 1 / 1; border-radius: 50%; }
+      .about-stat-row { gap: 1.5rem; flex-wrap: wrap; }
+    }
   </style>
 </head>
 <body>
@@ -1067,6 +1202,62 @@
       </div>
     </section>
 
+    <!-- ===== ABOUT / FOUNDER ===== -->
+    <section class="section section-about-tj" id="nosotros" data-nav-theme="light">
+      <div class="container about-tj-grid">
+
+        <div class="about-tj-photo-wrap">
+          <img
+            src="../Assets/profile.png"
+            alt="Joshua Ramírez — Especialista en marketing digital para el sector salud en Tijuana"
+            class="about-tj-photo"
+            width="280"
+            loading="lazy"
+          >
+          <p class="about-tj-name">Joshua Ramírez</p>
+          <p class="about-tj-role">Especialista en Marketing Digital</p>
+        </div>
+
+        <div class="about-tj-copy">
+          <p class="kicker kicker-light">Quién está detrás de la estrategia</p>
+          <h2>Search marketing especializado en salud — con criterio, contexto y resultados medibles</h2>
+          <p>Llevo más de 10 años desarrollando estrategias de marketing digital para negocios locales e internacionales. Hace varios años decidí enfocarme en un solo sector: salud. Porque cuando el trabajo consiste en conectar a un paciente con el especialista correcto, los resultados importan de verdad.</p>
+          <p>Me especializo en search marketing — el canal donde el paciente ya levantó la mano y está buscando activamente. SEO local bilingüe, Google Ads con geo-targeting transfronterizo y posicionamiento en Google Maps son los instrumentos que uso todos los días para médicos y clínicas en Tijuana y Baja California.</p>
+          <p>Soy el punto de contacto directo de cada cliente y quien lidera personalmente cada estrategia. Cuento con un equipo especializado que ejecuta junto a mí — lo que significa que tienes la atención de alguien con criterio y experiencia, respaldado por la capacidad operativa para entregar resultados consistentes.</p>
+
+          <div class="cred-grid">
+            <span class="cred-chip">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+              Lic. Administración de Empresas
+            </span>
+            <span class="cred-chip">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              Lic. Comercio Internacional
+            </span>
+            <span class="cred-chip">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+              Maestría en Mercadotecnia
+            </span>
+            <span class="cred-chip cred-google">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              Google Ads Certified
+            </span>
+            <span class="cred-chip cred-google">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              Google Analytics 4 Certified
+            </span>
+          </div>
+
+          <div class="about-stat-row">
+            <div class="about-stat"><strong>10+</strong><span>Años en marketing digital</span></div>
+            <div class="about-stat"><strong>340+</strong><span>Médicos y clínicas</span></div>
+            <div class="about-stat"><strong>3 grados</strong><span>+ Certificaciones activas</span></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
     <!-- ===== FAQ ===== -->
     <section class="section section-faq-tj" id="faq" data-nav-theme="light">
       <div class="container faq-tj-inner">
@@ -1109,7 +1300,7 @@
           <iframe
             loading="lazy"
             referrerpolicy="no-referrer-when-downgrade"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d107548.63290557!2d-117.14989!3d32.5220!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80d9a7f4c31b5e07%3A0xb5437ef25d2c8073!2sTijuana%2C%20Baja%20California!5e0!3m2!1ses-419!2smx!4v1712500000000"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d215461.36993356002!2d-116.94206084999999!3d32.457070599999994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x45f8d6ec4844ac95%3A0xc93fa5b1f9fce471!2sMarketing%20M%C3%A9dico-%20Activo%20Medical!5e0!3m2!1sen!2smx!4v1776274102539!5m2!1sen!2smx"
             title="Mapa de Tijuana, Baja California"
             aria-label="Mapa de Tijuana, Baja California"
             allowfullscreen></iframe>

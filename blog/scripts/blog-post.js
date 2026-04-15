@@ -405,6 +405,21 @@
         newScript.id = 'postSchemaJsonLd';
         newScript.textContent = typeof normalizedSchema === 'string' ? normalizedSchema : JSON.stringify(normalizedSchema);
         document.head.appendChild(newScript);
+
+        // Update BreadcrumbList position 3 with actual post title + URL
+        var breadcrumbScript = document.getElementById('postBreadcrumbJsonLd');
+        if (breadcrumbScript) {
+            var breadcrumb = {
+                '@context': 'https://schema.org',
+                '@type': 'BreadcrumbList',
+                itemListElement: [
+                    { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://activomedical.com/' },
+                    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://activomedical.com/blog/' },
+                    { '@type': 'ListItem', position: 3, name: post.title || 'Artículo', item: canonicalHref }
+                ]
+            };
+            breadcrumbScript.textContent = JSON.stringify(breadcrumb);
+        }
     }
 
     /* ── RENDER POST ────────────────────────────────────────────────── */
