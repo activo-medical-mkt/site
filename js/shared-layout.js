@@ -14,10 +14,52 @@
     '        </button>',
     '        <div class="nav-dropdown-menu" role="menu">',
     '          <span class="menu-label">Donde operamos</span>',
-    '          <a href="/marketing-medico-tijuana/" role="menuitem" data-match="medico">',
-    '            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>',
-    '            Marketing Medico Tijuana',
-    '          </a>',
+    '          <div class="menu-loc-row">',
+    '            <a href="/marketing-medico-tijuana/" role="menuitem" class="menu-loc-link" data-match="medico">',
+    '              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>',
+    '              Marketing M\u00e9dico \u00b7 Tijuana',
+    '            </a>',
+    '            <button class="menu-loc-expand" type="button" aria-expanded="false" aria-label="Ver servicios en Tijuana">',
+    '              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>',
+    '            </button>',
+    '          </div>',
+    '          <div class="menu-loc-sub" hidden>',
+    '            <a href="/marketing-medico-tijuana/seo-para-medicos/" role="menuitem">',
+    '              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+    '              SEO para M\u00e9dicos',
+    '            </a>',
+    '            <a href="/marketing-medico-tijuana/google-ads-medicos/" role="menuitem">',
+    '              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+    '              Google Ads para M\u00e9dicos',
+    '            </a>',
+    '            <a href="/marketing-medico-tijuana/paginas-web-para-medicos/" role="menuitem">',
+    '              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+    '              P\u00e1ginas Web para M\u00e9dicos',
+    '            </a>',
+    '          </div>',
+    '          <div class="menu-loc-row">',
+    '            <a href="/marketing-medico-guadalajara/" role="menuitem" class="menu-loc-link" data-match="medico-gdl">',
+    '              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>',
+    '              Marketing M\u00e9dico \u00b7 Guadalajara',
+    '            </a>',
+    '            <button class="menu-loc-expand" type="button" aria-expanded="false" aria-label="Ver servicios en Guadalajara">',
+    '              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>',
+    '            </button>',
+    '          </div>',
+    '          <div class="menu-loc-sub" hidden>',
+    '            <a href="/marketing-medico-guadalajara/seo-para-medicos/" role="menuitem">',
+    '              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+    '              SEO para M\u00e9dicos',
+    '            </a>',
+    '            <a href="/marketing-medico-guadalajara/google-ads-medicos/" role="menuitem">',
+    '              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+    '              Google Ads para M\u00e9dicos',
+    '            </a>',
+    '            <a href="/marketing-medico-guadalajara/paginas-web-para-medicos/" role="menuitem">',
+    '              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+    '              P\u00e1ginas Web para M\u00e9dicos',
+    '            </a>',
+    '          </div>',
     '        </div>',
     '      </div>',
     '      <div class="nav-dropdown" id="dd-esp-shared">',
@@ -56,7 +98,28 @@
     '        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>',
     '      </button>',
     '      <div class="nav-dropdown-menu" role="menu">',
-    '        <a href="/marketing-medico-tijuana/" role="menuitem">Marketing Medico Tijuana</a>',
+    '        <div class="menu-loc-row">',
+    '          <a href="/marketing-medico-tijuana/" role="menuitem" class="menu-loc-link">Marketing M\u00e9dico \u00b7 Tijuana</a>',
+    '          <button class="menu-loc-expand" type="button" aria-expanded="false" aria-label="Ver servicios en Tijuana">',
+    '            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>',
+    '          </button>',
+    '        </div>',
+    '        <div class="menu-loc-sub" hidden>',
+    '          <a href="/marketing-medico-tijuana/seo-para-medicos/" role="menuitem">SEO para M\u00e9dicos</a>',
+    '          <a href="/marketing-medico-tijuana/google-ads-medicos/" role="menuitem">Google Ads para M\u00e9dicos</a>',
+    '          <a href="/marketing-medico-tijuana/paginas-web-para-medicos/" role="menuitem">P\u00e1ginas Web para M\u00e9dicos</a>',
+    '        </div>',
+    '        <div class="menu-loc-row">',
+    '          <a href="/marketing-medico-guadalajara/" role="menuitem" class="menu-loc-link">Marketing M\u00e9dico \u00b7 Guadalajara</a>',
+    '          <button class="menu-loc-expand" type="button" aria-expanded="false" aria-label="Ver servicios en Guadalajara">',
+    '            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>',
+    '          </button>',
+    '        </div>',
+    '        <div class="menu-loc-sub" hidden>',
+    '          <a href="/marketing-medico-guadalajara/seo-para-medicos/" role="menuitem">SEO para M\u00e9dicos</a>',
+    '          <a href="/marketing-medico-guadalajara/google-ads-medicos/" role="menuitem">Google Ads para M\u00e9dicos</a>',
+    '          <a href="/marketing-medico-guadalajara/paginas-web-para-medicos/" role="menuitem">P\u00e1ginas Web para M\u00e9dicos</a>',
+    '        </div>',
     '      </div>',
     '    </div>',
     '    <div class="nav-dropdown" id="dd-esp-shared-m">',
@@ -105,6 +168,7 @@
     '      <ul>',
     '        <li><a href="/">Inicio</a></li>',
     '        <li><a href="/marketing-medico-tijuana/">Marketing medico Tijuana</a></li>',
+    '        <li><a href="/marketing-medico-guadalajara/">Marketing medico Guadalajara</a></li>',
     '        <li><a href="/marketing-cirujanos-plasticos-tijuana/">Cirujanos plasticos</a></li>',
     '        <li><a href="/marketing-dentistas-tijuana/">Dentistas</a></li>',
     '      </ul>',
@@ -134,6 +198,13 @@
     var path = window.location.pathname.replace(/index\.html$/, '');
     var map = {
       '/marketing-medico-tijuana/': 'medico',
+      '/marketing-medico-tijuana/seo-para-medicos/': 'medico',
+      '/marketing-medico-tijuana/google-ads-medicos/': 'medico',
+      '/marketing-medico-tijuana/paginas-web-para-medicos/': 'medico',
+      '/marketing-medico-guadalajara/': 'medico-gdl',
+      '/marketing-medico-guadalajara/seo-para-medicos/': 'medico-gdl',
+      '/marketing-medico-guadalajara/google-ads-medicos/': 'medico-gdl',
+      '/marketing-medico-guadalajara/paginas-web-para-medicos/': 'medico-gdl',
       '/marketing-cirujanos-plasticos-tijuana/': 'plasticos',
       '/marketing-dentistas-tijuana/': 'dentistas',
       '/blog/': 'blog'
@@ -159,6 +230,11 @@
         var trigger = item.querySelector('.nav-dropdown-trigger');
         if (trigger) trigger.setAttribute('aria-expanded', 'false');
       });
+      scope.querySelectorAll('.menu-loc-sub').forEach(function (sub) { sub.hidden = true; });
+      scope.querySelectorAll('.menu-loc-expand').forEach(function (btn) {
+        btn.setAttribute('aria-expanded', 'false');
+        btn.classList.remove('is-expanded');
+      });
     }
 
     function closeMobileNav(header) {
@@ -181,6 +257,20 @@
         mobileNav.hidden = !willOpen;
         toggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
         if (!willOpen) closeDropdowns(mobileNav);
+        e.stopPropagation();
+        return;
+      }
+
+      var locExpand = e.target.closest('.site-header .menu-loc-expand');
+      if (locExpand) {
+        var row = locExpand.closest('.menu-loc-row');
+        var sub = row && row.nextElementSibling;
+        if (sub && sub.classList.contains('menu-loc-sub')) {
+          var isOpen = !sub.hidden;
+          sub.hidden = isOpen;
+          locExpand.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+          locExpand.classList.toggle('is-expanded', !isOpen);
+        }
         e.stopPropagation();
         return;
       }
