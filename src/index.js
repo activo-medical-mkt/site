@@ -50,6 +50,13 @@ export default {
       const path = url.pathname;
       const assets = env.ASSETS;
 
+      // Redirect www to non-www
+      if (url.hostname.startsWith("www.")) {
+        const canonical = new URL(request.url);
+        canonical.hostname = canonical.hostname.replace(/^www\./, "");
+        return Response.redirect(canonical.toString(), 301);
+      }
+
       if (!assets || typeof assets.fetch !== "function") {
         return new Response("Assets binding is missing", { status: 500 });
       }
