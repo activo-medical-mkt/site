@@ -27,6 +27,12 @@ for (const entry of fs.readdirSync(__dirname)) {
 }
 console.log('📁 Files copied');
 
+// Copy favicon.ico to root so Google finds it at /favicon.ico
+fs.copyFileSync(
+  path.join(__dirname, 'Assets', 'Logos', 'favicon.ico'),
+  path.join(DEST, 'favicon.ico')
+);
+
 // ─── post-process ────────────────────────────────────────────────────────────
 
 const CleanCSS = require('clean-css');
