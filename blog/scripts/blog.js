@@ -368,9 +368,15 @@
         return window.CMSClient.fetchPosts(1, 20)
             .then(function (res) {
                 var payload = res && res.data ? res.data : {};
+                var seen = {};
                 var posts = parsePostsPayload(payload)
                     .filter(function (p) { return !!p && !!p.slug; })
-                    .filter(isPublished);
+                    .filter(isPublished)
+                    .filter(function (p) {
+                        if (seen[p.slug]) return false;
+                        seen[p.slug] = true;
+                        return true;
+                    });
 
                 return sortNewestFirst(posts).map(normalizePost);
             });

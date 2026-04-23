@@ -72,8 +72,10 @@ async function fetchPostMeta(slug, env) {
  */
 function injectOgTags(htmlRes, post, slug) {
   const canonical = `${SITE_ORIGIN}/blog/${slug}/`;
-  const pageTitle = post.title + " | Activo Medical Marketing";
-  const desc = post.description || "";
+  const pageTitle = post.title
+    ? post.title + " | Activo Medical Marketing"
+    : "Blog de Marketing Médico | Activo Medical Marketing";
+  const desc = post.description || "Estrategias de marketing digital para médicos y clínicas en México.";
   const image = post.image || FALLBACK_IMAGE;
 
   /** Shorthand handler that sets a single attribute */
@@ -154,16 +156,16 @@ export default {
         return assets.fetch(url.origin + "/blog/blog/index.html");
       }
 
-      // Blog article slug: /blog/<slug> — single segment, no file extension
-      const blogSlug = path.match(/^\/blog\/([^/]+)$/);
+      // Blog article slug: /blog/<slug> or /blog/<slug>/ — single segment, no file extension
+      const blogSlug = path.match(/^\/blog\/([^/]+)\/?$/);
       if (blogSlug && !blogSlug[1].includes(".")) {
         const slug = blogSlug[1];
         const htmlRes = await assets.fetch(url.origin + "/blog/_blog-post/index.html");
         // Fetch post meta and inject OG tags so Facebook / social crawlers
         // see the correct title, description and cover image without JS.
         const post = await fetchPostMeta(slug, env);
-        if (post) return injectOgTags(htmlRes, post, slug);
-        return htmlRes;
+        // Always inject — use fetched data or fall back to site defaults
+        return injectOgTags(htmlRes, post || { title: "", description: "", image: "" }, slug);
       }
 
       // All other requests: serve static assets as-is
