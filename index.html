@@ -1353,8 +1353,15 @@
         return res.json();
       })
       .then(function(payload) {
+        var seen = {};
         var posts = parsePostsPayload(payload)
+          .filter(function(p) { return !!p && !!p.slug; })
           .filter(isPublished)
+          .filter(function(p) {
+            if (seen[p.slug]) return false;
+            seen[p.slug] = true;
+            return true;
+          })
           .sort(function(a, b) {
             var da = new Date(a.published_at || a.created_at || 0).getTime() || 0;
             var db = new Date(b.published_at || b.created_at || 0).getTime() || 0;
