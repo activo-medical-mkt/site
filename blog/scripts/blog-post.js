@@ -275,7 +275,14 @@
                 avatar_gradient: pickFirst(authorBlock.avatar_gradient, authorBlock.avatarGradient, 'linear-gradient(135deg,#6600cc,#0000cc)'),
                 bio: pickFirst(authorBlock.bio, raw.author_bio, raw.authorBio)
             },
-            related: relatedRaw.slice(0, 3).map(function (p) {
+            related: (function () {
+                var seen = {};
+                return relatedRaw.filter(function (p) {
+                    if (!p || !p.slug || seen[p.slug]) return false;
+                    seen[p.slug] = true;
+                    return true;
+                }).slice(0, 3);
+            }()).map(function (p) {
                 var relatedAuthor = (p.author && p.author.name) || p.author_name || 'seermantic Team';
                 return {
                     slug: p.slug,
