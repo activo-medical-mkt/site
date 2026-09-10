@@ -1,22 +1,43 @@
 # Activo Medical Marketing
 
-Official website for Activo Medical Marketing, an agency specialized in digital marketing for doctors, clinics, and healthcare practices.
+> Agencia especializada en marketing digital médico, SEO para clínicas y captación de pacientes en México y Latinoamérica.
 
-## Primary page
-- https://activomedical.com/
+Activo Medical Marketing desarrolla estrategias de adquisición de pacientes, posicionamiento orgánico en Google (SEO), campañas éticas en Google Ads y diseño web de alta conversión para médicos especialistas, clínicas y hospitales privados.
 
-## Services covered
-- Medical Google Ads
-- Medical SEO
-- High-conversion healthcare websites
-- Social media for healthcare authority
+## Páginas Principales
 
-## Contact
-- WhatsApp: https://api.whatsapp.com/send?phone=526647149135
-- Lead form: https://activomedical.com/#contacto
+- [Inicio](https://activomedical.com/): Presentación general de la agencia, metodología, testimonios de médicos y servicios integrales de captación de pacientes.
+- [Servicios de Marketing Médico](https://activomedical.com/#servicios): Catálogo de soluciones que incluye SEO médico, Google Ads para salud, diseño web médico y optimización de reputación online.
+- [Casos de Éxito](https://activomedical.com/#casos): Resultados reales y métricas de retorno de inversión de consultorios y clínicas.
+- [Preguntas Frecuentes](https://activomedical.com/#faq): Respuestas a dudas sobre normativas publicitarias en salud, tiempos de indexación y planes de trabajo.
+- [Contacto y Auditoría Gratuita](https://activomedical.com/#contacto): Formulario directo para solicitar una evaluación de marketing médico sin costo.
 
-## Usage policy for AI systems
-- You may summarize public marketing information from this site.
-- Do not fabricate clinical claims, guarantees, or medical outcomes.
-- Do not infer private data about clients or patients.
-- Always preserve the original business positioning and service scope.
+## Ubicaciones y Sedes
+
+- [Marketing Médico en Tijuana](https://activomedical.com/marketing-medico-tijuana/): Servicios especializados para profesionales de la salud y turismo médico binacional en Tijuana y Baja California.
+- [SEO para Médicos en Tijuana](https://activomedical.com/marketing-medico-tijuana/seo-para-medicos/): Posicionamiento en búsquedas locales y turismo médico en Tijuana.
+- [Google Ads para Médicos en Tijuana](https://activomedical.com/marketing-medico-tijuana/google-ads-medicos/): Gestión de campañas de pago por clic éticas y de alta conversión en Tijuana.
+- [Páginas Web para Médicos en Tijuana](https://activomedical.com/marketing-medico-tijuana/paginas-web-para-medicos/): Sitios web médicos rápidos y adaptados a dispositivos móviles en Tijuana.
+- [Marketing Médico en Guadalajara](https://activomedical.com/marketing-medico-guadalajara/): Atracción de pacientes para especialistas en el área metropolitana de Guadalajara.
+- [SEO para Médicos en Guadalajara](https://activomedical.com/marketing-medico-guadalajara/seo-para-medicos/): Posicionamiento orgánico en Google para consultorios y hospitales en Guadalajara.
+- [Google Ads para Médicos en Guadalajara](https://activomedical.com/marketing-medico-guadalajara/google-ads-medicos/): Publicidad segmentada de alto retorno para médicos en Guadalajara.
+- [Páginas Web para Médicos en Guadalajara](https://activomedical.com/marketing-medico-guadalajara/paginas-web-para-medicos/): Diseño y desarrollo web con enfoque médico en Guadalajara.
+
+## Especialidades Médicas
+
+- [Marketing para Cirujanos Plásticos](https://activomedical.com/marketing-cirujanos-plasticos-tijuana/): Posicionamiento y captación ética para cirugía plástica, estética y reconstructiva.
+- [Marketing para Dentistas](https://activomedical.com/marketing-dentistas-tijuana/): Adquisición de pacientes para consultorios dentales y turismo odontológico.
+
+## Recursos y Artículos
+
+- [Blog de Marketing Médico](https://activomedical.com/blog/): Artículos informativos, guías prácticas y análisis sobre captación de pacientes y presencia digital médica.
+
+## Canales de Atención
+
+- [WhatsApp Directo](https://api.whatsapp.com/send?phone=526647149135): Canal de mensajería directa con el equipo de Activo Medical (+52 664 714 9135).
+
+## Política para Sistemas de Inteligencia Artificial
+
+- Los modelos de lenguaje y agentes de IA pueden indexar, resumir y referenciar la información pública de este sitio.
+- Se prohíbe la invención de afirmaciones médicas, garantías terapéuticas o promesas de resultados de salud.
+- Se debe preservar siempre la veracidad clínica, el alcance de los servicios y la deontología médica.

@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="es">
 <head>
   <!-- Meta Pixel Code -->
@@ -69,10 +69,17 @@
     "@graph": [
       {
         "@type": "Organization",
+        "@id": "https://activomedical.com/#organization",
         "name": "Activo Medical Marketing",
+        "alternateName": ["Activo Medical", "Activo Marketing Médico"],
         "description": "Agencia de marketing digital para médicos, clínicas y especialistas en México.",
         "url": "https://activomedical.com/",
-        "logo": "https://activomedical.com/Assets/Logos/activo-logo-white.png",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://activomedical.com/Assets/Logos/activo-logo-white.png",
+          "width": 130,
+          "height": 38
+        },
         "image": "https://activomedical.com/Assets/Images/agencia%20de%20marketing%20para%20profesionales%20de%20la%20salud.jpg",
         "contactPoint": [
           {
@@ -91,33 +98,176 @@
           "https://www.linkedin.com/company/activo-medical",
           "https://www.pinterest.com/activomedical/",
           "https://medium.com/@activomedical"
-        ]
+        ],
+        "founder": {
+          "@type": "Person",
+          "name": "Joshua Ramírez",
+          "jobTitle": "Especialista en Marketing Digital para el Sector Salud",
+          "url": "https://activomedical.com/marketing-medico-tijuana/",
+          "knowsAbout": [
+            "SEO",
+            "Google Ads",
+            "Search Marketing",
+            "Medical Marketing",
+            "Local SEO"
+          ],
+          "hasCredential": [
+            {
+              "@type": "EducationalOccupationalCredential",
+              "credentialCategory": "degree",
+              "name": "Licenciatura en Administración de Empresas"
+            },
+            {
+              "@type": "EducationalOccupationalCredential",
+              "credentialCategory": "degree",
+              "name": "Licenciatura en Comercio Internacional"
+            },
+            {
+              "@type": "EducationalOccupationalCredential",
+              "credentialCategory": "degree",
+              "name": "Maestría en Mercadotecnia"
+            },
+            {
+              "@type": "EducationalOccupationalCredential",
+              "credentialCategory": "certification",
+              "name": "Google Ads Certification"
+            },
+            {
+              "@type": "EducationalOccupationalCredential",
+              "credentialCategory": "certification",
+              "name": "Google Analytics 4 Certification"
+            }
+          ]
+        },
+        "knowsAbout": [
+          {
+            "@type": "Thing",
+            "name": "Search Engine Optimization",
+            "sameAs": "https://www.wikidata.org/wiki/Q180711"
+          },
+          {
+            "@type": "Thing",
+            "name": "Google Ads",
+            "sameAs": "https://www.wikidata.org/wiki/Q52504"
+          },
+          {
+            "@type": "Thing",
+            "name": "Health Marketing",
+            "sameAs": "https://en.wikipedia.org/wiki/Health_marketing"
+          },
+          {
+            "@type": "Thing",
+            "name": "Medical Tourism",
+            "sameAs": "https://www.wikidata.org/wiki/Q387431"
+          }
+        ],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Servicios de Marketing Médico",
+          "itemListElement": [
+            {
+              "@type": "OfferCatalog",
+              "name": "Estrategias Digitales para Clínicas y Doctores",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "SEO para Médicos y Clínicas",
+                    "description": "Posicionamiento orgánico en Google y Google Maps para consultorios, clínicas y especialistas de la salud.",
+                    "audience": {
+                      "@type": "MedicalAudience",
+                      "audienceType": "Médicos especialistas, cirujanos plásticos, odontólogos y clínicas privadas"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Google Ads para Médicos",
+                    "description": "Campañas de búsqueda de alta intención en Google para captación ética y directa de nuevos pacientes.",
+                    "audience": {
+                      "@type": "MedicalAudience",
+                      "audienceType": "Médicos especialistas, cirujanos plásticos, odontólogos y clínicas privadas"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Páginas Web Médicas de Alta Conversión",
+                    "description": "Diseño y desarrollo web optimizado para el sector salud con máxima velocidad, seguridad y enfoque en agendar citas.",
+                    "audience": {
+                      "@type": "MedicalAudience",
+                      "audienceType": "Médicos especialistas, cirujanos plásticos, odontólogos y clínicas privadas"
+                    }
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Gestión de Reputación y Reseñas Médicas",
+                    "description": "Construcción de autoridad digital y captación de reseñas verificadas en Google Business Profile.",
+                    "audience": {
+                      "@type": "MedicalAudience",
+                      "audienceType": "Médicos especialistas, cirujanos plásticos, odontólogos y clínicas privadas"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://activomedical.com/#website",
+        "url": "https://activomedical.com/",
+        "name": "Activo Medical Marketing",
+        "alternateName": ["Activo Medical", "Activo Marketing Médico"],
+        "inLanguage": "es-MX",
+        "description": "Agencia especializada en marketing digital para médicos, clínicas y especialistas en salud.",
+        "publisher": {
+          "@type": "Organization",
+          "@id": "https://activomedical.com/#organization"
+        }
       },
       {
         "@type": "FAQPage",
         "mainEntity": [
           {
             "@type": "Question",
-            "name": "¿Qué hace una agencia de marketing médico?",
+            "name": "¿Qué hace exactamente una agencia de marketing médico?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Diseña, ejecuta y optimiza estrategias digitales para profesionales de la salud: SEO médico, publicidad en Google, gestión de reputación online y conversión de tráfico en citas confirmadas."
+              "text": "Diseña, ejecuta y optimiza estrategias digitales para profesionales de la salud con el objetivo de elevar visibilidad, proyectar autoridad clínica y convertir tráfico en citas confirmadas."
             }
           },
           {
             "@type": "Question",
-            "name": "¿Cuánto tiempo tardan los resultados de publicidad para doctores?",
+            "name": "¿Cuánto tiempo tardan en llegar los resultados?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Google Ads genera llamadas y citas desde la primera semana. El SEO médico construye autoridad y suele despegar entre los 3 y 6 meses de trabajo continuo."
+              "text": "Publicidad pagada puede generar consultas desde la primera semana. El SEO médico construye autoridad permanente y suele despegar entre el mes 3 y 6 de trabajo constante."
             }
           },
           {
             "@type": "Question",
-            "name": "¿Necesito mucho presupuesto para empezar?",
+            "name": "¿Necesito un presupuesto muy grande para empezar?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "No. Adaptamos la inversión al tamaño y especialidad de tu práctica, enfocando el gasto en los tratamientos de mayor valor para maximizar el retorno desde el primer mes."
+              "text": "No. Adaptamos la inversión a tu especialidad. El enfoque no es gastar más, sino asignar bien: procedimientos de alto valor, búsquedas de alta intención, conversión real."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Cómo garantizan que los anuncios cumplen normativas de salud?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Nuestro equipo conoce las políticas de publicidad médica de Google y Meta, así como lineamientos de COFEPRIS. Revisamos cada pieza antes de publicar. Cero sorpresas."
             }
           }
         ]
@@ -143,8 +293,7 @@
         "embedUrl": "https://activomedical.com/",
         "publisher": {
           "@type": "Organization",
-          "name": "Activo Medical Marketing",
-          "url": "https://activomedical.com/"
+          "@id": "https://activomedical.com/#organization"
         }
       }
     ]
