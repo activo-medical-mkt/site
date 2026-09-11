@@ -131,6 +131,20 @@ async function handleCmsProxy(request, env, url) {
   });
 }
 
+function withUtf8Html(res) {
+  const ct = res.headers.get("content-type");
+  if (ct && ct.includes("text/html") && !ct.toLowerCase().includes("charset")) {
+    const headers = new Headers(res.headers);
+    headers.set("content-type", "text/html; charset=utf-8");
+    return new Response(res.body, {
+      status: res.status,
+      statusText: res.statusText,
+      headers
+    });
+  }
+  return res;
+}
+
 export default {
   async fetch(request, env) {
     try {
@@ -153,7 +167,7 @@ export default {
 
       // Blog listing
       if (path === "/blog" || path === "/blog/") {
-        return assets.fetch(url.origin + "/blog/blog/index.html");
+        return withUtf8Html(await assets.fetch(url.origin + "/blog/blog/index.html"));
       }
 
       // Blog article slug: /blog/<slug> or /blog/<slug>/ — single segment, no file extension
@@ -165,11 +179,12 @@ export default {
         // see the correct title, description and cover image without JS.
         const post = await fetchPostMeta(slug, env);
         // Always inject — use fetched data or fall back to site defaults
-        return injectOgTags(htmlRes, post || { title: "", description: "", image: "" }, slug);
+        return withUtf8Html(injectOgTags(htmlRes, post || { title: "", description: "", image: "" }, slug));
       }
 
       // All other requests: serve static assets as-is
-      return assets.fetch(request);
+      const res = await assets.fetch(request);
+      return withUtf8Html(res);
     } catch (error) {
       return new Response("Worker routing error", { status: 500 });
     }
