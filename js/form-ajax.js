@@ -23,11 +23,44 @@
     var msgEl = form.querySelector('.form-message');
     if (!msgEl) return;
 
+    var formLabel = form.getAttribute('aria-label') || 'formulario_auditoria';
+
+    // Track when user first interacts with any field in the form (form_start)
+    var formStarted = false;
+    form.addEventListener('focusin', function () {
+      if (formStarted) return;
+      formStarted = true;
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: 'form_start',
+        form_id: formLabel,
+        page_path: window.location.pathname
+      });
+    }, { once: true });
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
 
       var btn = form.querySelector('[type="submit"]');
       var btnHTML = btn.innerHTML;
+
+      // 1. Honeypot check
+      var gotcha = form.querySelector('input[name="_gotcha"]');
+      if (gotcha && gotcha.value.trim() !== '') {
+        // Bot trapped in honeypot. Fake success quietly without hitting HubSpot or GTM
+        msgEl.textContent = '\u00a1Gracias! Nos pondremos en contacto contigo pronto.';
+        msgEl.className = 'form-message form-success';
+        form.reset();
+        return;
+      }
+
+      // 2. Anti-bot physical click check
+      var isTrusted = e.isTrusted === true;
+      if (!isTrusted) {
+        return; // Programmatic script submission blocked
+      }
+
+      var hasTurnstile = !!window.__cf_turnstile_token;
 
       btn.disabled = true;
       btn.textContent = 'Enviando\u2026';
@@ -67,6 +100,18 @@
               msgEl.textContent =
                 '\u00a1Gracias! Nos pondremos en contacto contigo pronto.';
               msgEl.className = 'form-message form-success';
+
+              // 3. Dispatch verified form submission conversion to GTM
+              window.dataLayer = window.dataLayer || [];
+              window.dataLayer.push({
+                event: 'form_submit_success',
+                form_id: formLabel,
+                especialidad: String(formData.get('especialidad') || formData.get('tratamientos') || formData.get('procedimientos') || '').trim(),
+                reto: String(formData.get('reto') || '').trim(),
+                page_path: window.location.pathname,
+                turnstile_verified: hasTurnstile
+              });
+
               form.reset();
             } else {
               var errMsg = 'Hubo un error al enviar el formulario. Intenta de nuevo.';
@@ -88,7 +133,6 @@
         .then(function () {
           btn.disabled = false;
           btn.innerHTML = btnHTML;
-
         });
     });
   });
