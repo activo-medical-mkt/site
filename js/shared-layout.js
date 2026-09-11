@@ -366,6 +366,121 @@
     });
   }
 
+  function initWhatsAppTrackingWithTurnstile() {
+    var SITE_KEY = '0x4AAAAAAC1hiFONSvY2jnAM';
+    var pageStartTime = Date.now();
+    var hasInteracted = false;
+
+    // 1. Create invisible container for Turnstile
+    var tsContainer = document.getElementById('cf-turnstile-box');
+    if (!tsContainer) {
+      tsContainer = document.createElement('div');
+      tsContainer.id = 'cf-turnstile-box';
+      tsContainer.style.cssText = 'position:fixed;bottom:-9999px;left:-9999px;opacity:0;pointer-events:none;z-index:-1;';
+      document.body.appendChild(tsContainer);
+    }
+
+    // 2. Load Turnstile API explicitly if not already present
+    function loadTurnstileScript() {
+      if (document.getElementById('cf-turnstile-script')) return;
+      var script = document.createElement('script');
+      script.id = 'cf-turnstile-script';
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      script.async = true;
+      script.defer = true;
+      script.onload = function () {
+        renderTurnstile();
+      };
+      document.head.appendChild(script);
+    }
+
+    function renderTurnstile() {
+      if (window.__cf_turnstile_rendered || !window.turnstile) return;
+      try {
+        window.__cf_widget_id = window.turnstile.render('#cf-turnstile-box', {
+          sitekey: SITE_KEY,
+          action: 'whatsapp_verify',
+          callback: function (token) {
+            window.__cf_turnstile_token = token;
+          },
+          'error-callback': function () {
+            window.__cf_turnstile_token = null;
+          },
+          'expired-callback': function () {
+            window.__cf_turnstile_token = null;
+            if (window.turnstile && window.__cf_widget_id) {
+              window.turnstile.reset(window.__cf_widget_id);
+            }
+          }
+        });
+        window.__cf_turnstile_rendered = true;
+      } catch (err) {
+        console.warn('Turnstile render:', err);
+      }
+    }
+
+    // Pre-warm on first human interaction or after 2s
+    function onFirstInteraction() {
+      if (hasInteracted) return;
+      hasInteracted = true;
+      loadTurnstileScript();
+      if (window.turnstile) renderTurnstile();
+    }
+
+    ['scroll', 'mousemove', 'touchstart', 'keydown'].forEach(function (evt) {
+      window.addEventListener(evt, onFirstInteraction, { passive: true, once: true });
+    });
+
+    // Fallback timer if user doesn't interact immediately
+    setTimeout(onFirstInteraction, 2000);
+
+    // 3. Global click interceptor for all WhatsApp links across the site
+    document.addEventListener('click', function (e) {
+      var link = e.target.closest('a[href*="api.whatsapp.com"], a[href*="wa.me"]');
+      if (!link) return;
+
+      var isTrusted = e.isTrusted === true;
+      var timeSpent = Date.now() - pageStartTime;
+      var hasToken = !!window.__cf_turnstile_token;
+
+      var location = 'body_cta';
+      if (link.closest('.site-header')) location = 'header_cta';
+      else if (link.closest('.mobile-nav')) location = 'mobile_nav_cta';
+      else if (link.closest('.wa-widget')) location = 'floating_widget';
+      else if (link.closest('.section-hero')) location = 'hero_cta';
+      else if (link.closest('.site-footer')) location = 'footer_cta';
+
+      var buttonText = (link.innerText || link.getAttribute('aria-label') || '').trim();
+
+      // Bot protection check:
+      // Human if physical event AND (has valid Turnstile token OR time on page >= 2.5s)
+      var isVerified = isTrusted && (hasToken || timeSpent >= 2500);
+
+      window.dataLayer = window.dataLayer || [];
+
+      if (isVerified) {
+        window.dataLayer.push({
+          event: 'whatsapp_click_verified',
+          button_location: location,
+          button_text: buttonText,
+          page_path: window.location.pathname,
+          turnstile_token: hasToken ? 'verified' : 'time_fallback',
+          time_spent_seconds: Math.round(timeSpent / 1000)
+        });
+      } else {
+        // Suspicious instant bot click
+        window.dataLayer.push({
+          event: 'whatsapp_click_unverified',
+          button_location: location,
+          button_text: buttonText,
+          page_path: window.location.pathname,
+          time_spent_ms: timeSpent,
+          is_trusted: isTrusted
+        });
+      }
+    }, true);
+  }
+
   function injectSharedLayout() {
     var headerSlot = document.getElementById('site-header-placeholder');
     if (headerSlot) {
@@ -382,6 +497,7 @@
     initSharedNav();
     ensureWhatsAppWidget();
     initWhatsAppWidget();
+    initWhatsAppTrackingWithTurnstile();
 
     var year = document.getElementById('fyear');
     if (year) year.textContent = new Date().getFullYear();
