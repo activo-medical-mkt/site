@@ -345,10 +345,21 @@
 
     fab.setAttribute('data-shared-init', '1');
 
-    fab.addEventListener('click', function () {
+    var hasOpenedBefore = false;
+    fab.addEventListener('click', function (e) {
       var willOpen = panel.hidden;
       panel.hidden = !willOpen;
       fab.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+
+      if (willOpen && e.isTrusted) {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: 'whatsapp_widget_open',
+          first_open: !hasOpenedBefore,
+          page_path: window.location.pathname
+        });
+        hasOpenedBefore = true;
+      }
     });
 
     document.addEventListener('click', function (e) {
