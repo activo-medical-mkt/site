@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-    <!-- Google Tag Manager + Meta Pixel: queued now, loaded on the first real
+    <!-- Google Tag Manager + Meta Pixel + Microsoft Clarity: queued now, loaded on the first real
        interaction or 5.5 s after the page loads, so they stay off the critical path. -->
   <script>
   window.dataLayer = window.dataLayer || [];
@@ -13,6 +13,7 @@
   if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[]}(window);
   fbq('init', '2556815078070378');
   fbq('track', 'PageView');
+  window.clarity = window.clarity || function () { (window.clarity.q = window.clarity.q || []).push(arguments); };
   (function () {
     var loaded = false;
     function add(src) { var s = document.createElement('script'); s.async = true; s.src = src; document.head.appendChild(s); }
@@ -20,6 +21,7 @@
       if (loaded) return; loaded = true;
       add('https://www.googletagmanager.com/gtm.js?id=GTM-WJL56FB8');
       add('https://connect.facebook.net/en_US/fbevents.js');
+      add('https://www.clarity.ms/tag/yv6vzatff5?ref=bwt');
     }
     ['pointerdown', 'keydown', 'touchstart', 'mousemove', 'wheel'].forEach(function (e) {
       window.addEventListener(e, load, { once: true, passive: true });
