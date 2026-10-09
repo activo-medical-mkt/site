@@ -146,8 +146,47 @@ async function convertImages() {
   console.log(`📝 HTML+JS updated (${htmlCount} files)`);
 }
 
+// ── 0. Snapshot published CMS posts into public/blog/_data/<slug>.json ─────
+// The Worker serves these when the live CMS call is blocked/unavailable (e.g.
+// Bot Fight Mode challenging Googlebot-originated requests). Never fails the build.
+async function snapshotPosts() {
+  const token = (process.env.CMS_PUBLIC_TOKEN || '').trim();
+  if (!token) {
+    console.warn('⚠️  CMS_PUBLIC_TOKEN not set at build time — skipping post snapshot');
+    return;
+  }
+  const api = (process.env.CMS_API_BASE || 'https://app.seermantic.com/api/posts').replace(/\/+$/, '');
+  const projectId = process.env.CMS_PROJECT_ID || '65bb6d01';
+  const headers = { accept: 'application/json', 'user-agent': 'ActivoMedical-Build/1.0', 'x-cms-public-token': token };
+  const outDir = path.join(DEST, 'blog', '_data');
+  try {
+    fs.mkdirSync(outDir, { recursive: true });
+    const slugs = [];
+    for (let page = 1; page <= 50; page++) {
+      const res = await fetch(`${api}?projectId=${encodeURIComponent(projectId)}&page=${page}&per_page=50`, { headers });
+      if (!res.ok) throw new Error(`list ${res.status}`);
+      const data = await res.json();
+      const posts = data.posts || data.items || [];
+      posts.forEach(p => p && p.slug && !slugs.includes(p.slug) && slugs.push(p.slug));
+      if (posts.length < 50 || slugs.length >= (data.total || Infinity)) break;
+    }
+    let saved = 0;
+    for (const slug of slugs) {
+      if (!/^[a-z0-9-]+$/i.test(slug)) continue;
+      const res = await fetch(`${api}/${encodeURIComponent(slug)}?projectId=${encodeURIComponent(projectId)}`, { headers });
+      if (!res.ok) { console.warn(`⚠️  snapshot ${slug}: ${res.status}`); continue; }
+      fs.writeFileSync(path.join(outDir, `${slug}.json`), await res.text(), 'utf8');
+      saved++;
+    }
+    console.log(`📰 CMS posts snapshotted (${saved}/${slugs.length})`);
+  } catch (err) {
+    console.warn('⚠️  Post snapshot failed:', err.message);
+  }
+}
+
 // Run async steps
 (async () => {
+  await snapshotPosts();
   await minifyAllJs();
   await convertImages();
   await regenFavicon();

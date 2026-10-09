@@ -13,11 +13,57 @@ function json(body, status) {
   });
 }
 
+/** Turn a CMS response (live or build-time snapshot) into { title, description, image, raw }. */
+function parsePost(data) {
+  // Unwrap various response envelope shapes
+  const raw = (data && (
+    (data.post && typeof data.post === "object" ? data.post : null) ||
+    (data.item && typeof data.item === "object" ? data.item : null) ||
+    (data.data && typeof data.data === "object"
+      ? (data.data.post || data.data.item || data.data)
+      : null) ||
+    data
+  )) || {};
+
+  const title = raw.seo_title || raw.seoTitle || raw.title || "";
+  const description =
+    raw.meta_description || raw.metaDescription ||
+    raw.seo_description || raw.seoDescription ||
+    raw.excerpt || raw.summary || "";
+  const image =
+    raw.og_image || raw.ogImage ||
+    raw.social_image || raw.socialImage ||
+    raw.hero_image || raw.heroImage ||
+    raw.cover_image || raw.coverImage ||
+    raw.image || "";
+
+  if (!title) return { error: "no-title" };
+  return { title, description, image, raw };
+}
+
+/**
+ * Live CMS first (always fresh). If the CMS is unreachable or challenges the
+ * request (e.g. Bot Fight Mode blocking Googlebot-originated subrequests), fall
+ * back to the copy of the post that build.js baked into /blog/_data/<slug>.json.
+ */
+async function fetchPost(slug, env, assets, origin) {
+  const live = await fetchLivePost(slug, env);
+  if (!live || !live.error) return live;
+  try {
+    const res = await assets.fetch(`${origin}/blog/_data/${encodeURIComponent(slug)}.json`);
+    if (res.ok) {
+      const snap = parsePost(await res.json());
+      if (!snap.error) return snap;
+    }
+  } catch (_) {}
+  return live;
+}
+
 /**
  * Fetch just the meta fields needed for OG tags from the CMS.
  * Returns null on any error so the caller can fall back to plain asset serving.
  */
-async function fetchPost(slug, env) {
+async function fetchLivePost(slug, env) {
   const token = String(env.CMS_PUBLIC_TOKEN || "").trim();
   if (!token) return { error: "no-token" };
 
@@ -35,6 +81,7 @@ async function fetchPost(slug, env) {
         res = await fetch(apiUrl, {
           headers: {
             "accept": "application/json",
+            "user-agent": "ActivoMedical-Site-Worker/1.0",
             "x-cms-public-token": token
           },
           // Cache only successful lookups. A bare cacheTtl applies to every
@@ -59,31 +106,7 @@ async function fetchPost(slug, env) {
       return { error: "cms-status-" + res.status + " [" + h + "] " + detail };
     }
 
-    const data = await res.json();
-    // Unwrap various response envelope shapes
-    const raw = (data && (
-      (data.post && typeof data.post === "object" ? data.post : null) ||
-      (data.item && typeof data.item === "object" ? data.item : null) ||
-      (data.data && typeof data.data === "object"
-        ? (data.data.post || data.data.item || data.data)
-        : null) ||
-      data
-    )) || {};
-
-    const title = raw.seo_title || raw.seoTitle || raw.title || "";
-    const description =
-      raw.meta_description || raw.metaDescription ||
-      raw.seo_description || raw.seoDescription ||
-      raw.excerpt || raw.summary || "";
-    const image =
-      raw.og_image || raw.ogImage ||
-      raw.social_image || raw.socialImage ||
-      raw.hero_image || raw.heroImage ||
-      raw.cover_image || raw.coverImage ||
-      raw.image || "";
-
-    if (!title) return { error: "no-title" };
-    return { title, description, image, raw };
+    return parsePost(await res.json());
   } catch (e) {
     return { error: "exception: " + String((e && e.message) || e).slice(0, 80) };
   }
@@ -212,7 +235,7 @@ export default {
         const htmlRes = await assets.fetch(url.origin + "/blog/_blog-post/index.html");
         // Fetch post meta and inject OG tags so Facebook / social crawlers
         // see the correct title, description and cover image without JS.
-        const post = await fetchPost(slug, env);
+        const post = await fetchPost(slug, env, assets, url.origin);
         // Unknown slug: return a real 404 (not a 200 shell) so Google doesn't flag a soft 404.
         if (post && post.notFound) {
           const notFound = new HTMLRewriter()
