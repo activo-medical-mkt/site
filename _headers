@@ -1,0 +1,3 @@
+# Static assets rarely change; let browsers keep them for 30 days.
+/Assets/*
+  Cache-Control: public, max-age=2592000

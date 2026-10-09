@@ -430,7 +430,7 @@
       }
     }
 
-    // Pre-warm on first human interaction or after 2s
+    // Pre-warm on first human interaction, or 5.5s after the page loads
     function onFirstInteraction() {
       if (hasInteracted) return;
       hasInteracted = true;
@@ -438,12 +438,13 @@
       if (window.turnstile) renderTurnstile();
     }
 
-    ['scroll', 'mousemove', 'touchstart', 'keydown'].forEach(function (evt) {
+    ['pointerdown', 'mousemove', 'wheel', 'touchstart', 'keydown'].forEach(function (evt) {
       window.addEventListener(evt, onFirstInteraction, { passive: true, once: true });
     });
 
-    // Fallback timer if user doesn't interact immediately
-    setTimeout(onFirstInteraction, 2000);
+    // Fallback timer if the user doesn't interact (kept off the initial load)
+    if (document.readyState === 'complete') setTimeout(onFirstInteraction, 5500);
+    else window.addEventListener('load', function () { setTimeout(onFirstInteraction, 5500); });
 
     // 3. Global click interceptor for all WhatsApp links across the site
     document.addEventListener('click', function (e) {

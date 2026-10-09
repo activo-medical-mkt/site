@@ -409,6 +409,48 @@ function safeJson(value) {
   return JSON.stringify(value).replace(/</g, "\\u003c");
 }
 
+/**
+ * Post list built from the KV copies, used when the CMS refuses the request
+ * (its Bot Fight Mode challenges requests that originate from Google's tools).
+ * Same shape as the CMS list: { posts, total, page, per_page }.
+ */
+async function listPostsFromKv(env, url) {
+  const kv = env.POSTS_CACHE;
+  if (!kv) return null;
+  const names = [];
+  let cursor;
+  do {
+    const page = await kv.list({ prefix: KV_PREFIX, cursor });
+    page.keys.forEach((k) => names.push(k.name));
+    cursor = page.list_complete ? null : page.cursor;
+  } while (cursor);
+
+  const category = (url.searchParams.get("category") || "").trim().toLowerCase();
+  const search = (url.searchParams.get("search") || "").trim().toLowerCase();
+  const posts = [];
+  for (const raw of await Promise.all(names.map((n) => kv.get(n, "json")))) {
+    if (!raw || !raw.slug) continue;
+    if (category && String(raw.category || "").toLowerCase() !== category) continue;
+    if (search && !`${raw.title} ${raw.excerpt} ${raw.body_html}`.toLowerCase().includes(search)) continue;
+    posts.push({
+      slug: raw.slug,
+      title: raw.title,
+      excerpt: raw.excerpt || "",
+      category: raw.category || "General",
+      published_at: raw.published_at,
+      read_time: raw.read_time || 1,
+      hero_image: raw.hero_image || "",
+      author: { name: (raw.author && raw.author.name) || "", avatar: (raw.author && raw.author.avatar) || "" },
+      updated_at: raw.updated_at || null
+    });
+  }
+  posts.sort((a, b) => String(b.published_at || "").localeCompare(String(a.published_at || "")));
+
+  const perPage = Math.max(1, Math.min(50, parseInt(url.searchParams.get("per_page"), 10) || 10));
+  const page = Math.max(1, parseInt(url.searchParams.get("page"), 10) || 1);
+  return { posts: posts.slice((page - 1) * perPage, page * perPage), total: posts.length, page, per_page: perPage };
+}
+
 async function handleCmsProxy(request, env, url) {
   const token = String(env.CMS_PUBLIC_TOKEN || "").trim();
   if (!token) {
@@ -432,6 +474,12 @@ async function handleCmsProxy(request, env, url) {
       "x-cms-public-token": token
     }
   });
+
+  // List request refused by the CMS: answer from KV instead of passing the error on.
+  if (!upstreamRes.ok && upstreamRes.status !== 404 && !suffix.replace(/\//g, "")) {
+    const fromKv = await listPostsFromKv(env, url).catch(() => null);
+    if (fromKv) return json(fromKv, 200);
+  }
 
   const headers = new Headers(upstreamRes.headers);
   headers.set("cache-control", "no-store");
