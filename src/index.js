@@ -44,22 +44,13 @@ function parsePost(data) {
 const KV_PREFIX = "post:";
 
 /**
- * Live CMS first (always fresh). The CMS zone's Bot Fight Mode challenges
- * requests that originate from Googlebot, so when the live call fails we serve
- * the last good copy from KV. Copies are written on every successful live
- * fetch and refreshed by the scheduled job (which Googlebot never triggers).
+ * KV first. The CMS pushes changes through /api/revalidate (webhook) and the
+ * 5-minute sync catches anything missed, so page views don't depend on the CMS,
+ * whose Bot Fight Mode challenges requests that originate from Googlebot. The
+ * live CMS is only asked on a KV miss (e.g. a post published seconds ago).
  */
 async function fetchPost(slug, env, ctx) {
   const kv = env.POSTS_CACHE;
-  const live = await fetchLivePost(slug, env);
-  if (live && live.notFound) {
-    if (kv) ctx.waitUntil(kv.delete(KV_PREFIX + slug).catch(() => {}));
-    return live;
-  }
-  if (live && !live.error) {
-    if (kv) ctx.waitUntil(kv.put(KV_PREFIX + slug, JSON.stringify(live.data)).catch(() => {}));
-    return live;
-  }
   if (kv) {
     try {
       const cached = await kv.get(KV_PREFIX + slug, "json");
@@ -69,39 +60,136 @@ async function fetchPost(slug, env, ctx) {
       }
     } catch (_) {}
   }
+  const live = await fetchLivePost(slug, env);
+  if (kv && live && !live.error && !live.notFound) {
+    ctx.waitUntil(storePost(kv, slug, live.data).catch(() => {}));
+  }
   return live;
 }
 
-/** Cron: pull every published post into KV. */
-async function refreshPostCache(env) {
+function storePost(kv, slug, data) {
+  return kv.put(KV_PREFIX + slug, JSON.stringify(data), {
+    metadata: { updated_at: String((data && data.updated_at) || "") }
+  });
+}
+
+/** Re-fetch one post from the CMS (no caches) and update or remove its KV copy. */
+async function syncPost(slug, env) {
+  const live = await fetchLivePost(slug, env, { fresh: true });
+  if (live.notFound) {
+    await env.POSTS_CACHE.delete(KV_PREFIX + slug);
+    return "deleted";
+  }
+  if (live.error) throw new Error(String(live.error).slice(0, 160));
+  await storePost(env.POSTS_CACHE, slug, live.data);
+  return "stored";
+}
+
+/**
+ * Cron: store new/changed posts and drop unpublished ones. Only posts whose
+ * updated_at differs from the KV copy are fetched and written, which keeps a
+ * 5-minute schedule well inside the KV free tier.
+ */
+async function syncAllPosts(env) {
   const kv = env.POSTS_CACHE;
   const token = String(env.CMS_PUBLIC_TOKEN || "").trim();
   if (!kv || !token) return;
   const apiBase = String(env.CMS_API_BASE || DEFAULT_CMS_API).replace(/\/+$/, "");
   const projectId = String(env.CMS_PROJECT_ID || DEFAULT_PROJECT_ID);
   const headers = { accept: "application/json", "user-agent": "ActivoMedical-Site-Worker/1.0", "x-cms-public-token": token };
-  const slugs = [];
+
+  const listed = new Map(); // slug -> updated_at
   for (let page = 1; page <= 50; page++) {
-    const res = await fetch(`${apiBase}?projectId=${encodeURIComponent(projectId)}&page=${page}&per_page=50`, { headers });
+    const res = await fetch(`${apiBase}?projectId=${encodeURIComponent(projectId)}&page=${page}&per_page=50`, { headers, cf: { cacheTtl: -1 } });
     if (!res.ok) throw new Error("list failed: " + res.status);
     const data = await res.json();
     const posts = data.posts || data.items || [];
-    posts.forEach((p) => p && p.slug && !slugs.includes(p.slug) && slugs.push(p.slug));
-    if (posts.length < 50 || slugs.length >= (data.total || Infinity)) break;
+    posts.forEach((p) => p && p.slug && !listed.has(p.slug) && listed.set(p.slug, String(p.updated_at || "")));
+    if (posts.length < 50 || listed.size >= (data.total || Infinity)) break;
   }
+
+  const known = new Map(); // slug -> updated_at stored with the KV copy
+  let cursor;
+  do {
+    const page = await kv.list({ prefix: KV_PREFIX, cursor });
+    page.keys.forEach((k) => known.set(k.name.slice(KV_PREFIX.length), (k.metadata && k.metadata.updated_at) || ""));
+    cursor = page.list_complete ? null : page.cursor;
+  } while (cursor);
+
+  let stored = 0, deleted = 0, failed = 0;
+  for (const [slug, updatedAt] of listed) {
+    // Without updated_at we can't detect edits; only fill missing posts (webhooks cover edits).
+    if (known.has(slug) && (!updatedAt || known.get(slug) === updatedAt)) continue;
+    try {
+      await syncPost(slug, env);
+      stored++;
+    } catch (e) {
+      failed++;
+      console.error("syncAllPosts " + slug + ": " + e.message);
+    }
+  }
+  for (const slug of known.keys()) {
+    if (!listed.has(slug)) {
+      await kv.delete(KV_PREFIX + slug);
+      deleted++;
+    }
+  }
+  console.log(`syncAllPosts: ${listed.size} published, ${stored} stored, ${deleted} deleted, ${failed} failed`);
+}
+
+async function safeEqual(a, b) {
+  const enc = new TextEncoder();
+  const [x, y] = await Promise.all([
+    crypto.subtle.digest("SHA-256", enc.encode(a)),
+    crypto.subtle.digest("SHA-256", enc.encode(b))
+  ]);
+  return crypto.subtle.timingSafeEqual(x, y);
+}
+
+/**
+ * CMS webhook: POST {"projectId", "slugs": [...]} with x-cms-webhook-secret.
+ * Answers 502 if any slug failed so the CMS retries.
+ */
+async function handleRevalidate(request, env) {
+  if (request.method !== "POST") return json({ error: "method not allowed" }, 405);
+  const expected = String(env.CMS_WEBHOOK_SECRET || "");
+  const provided = request.headers.get("x-cms-webhook-secret") || "";
+  if (!expected || !env.POSTS_CACHE || !(await safeEqual(provided, expected))) {
+    return json({ error: "unauthorized" }, 401);
+  }
+  let body;
+  try {
+    body = await request.json();
+  } catch (_) {
+    return json({ error: "invalid json" }, 400);
+  }
+  const projectId = String(env.CMS_PROJECT_ID || DEFAULT_PROJECT_ID);
+  if (body.projectId && String(body.projectId) !== projectId) {
+    return json({ error: "unknown project" }, 400);
+  }
+  const slugs = (Array.isArray(body.slugs) ? body.slugs : [])
+    .map(String)
+    .filter((slug) => /^[a-z0-9-]{1,160}$/i.test(slug))
+    .slice(0, 20);
+
+  const results = {};
+  let failed = false;
   for (const slug of slugs) {
-    const res = await fetch(`${apiBase}/${encodeURIComponent(slug)}?projectId=${encodeURIComponent(projectId)}`, { headers });
-    if (res.ok) await kv.put(KV_PREFIX + slug, await res.text());
-    else console.error("refreshPostCache " + slug + ": " + res.status);
+    try {
+      results[slug] = await syncPost(slug, env);
+    } catch (e) {
+      results[slug] = "error: " + e.message;
+      failed = true;
+    }
   }
-  console.log("refreshPostCache: stored " + slugs.length + " posts");
+  return json({ ok: !failed, results }, failed ? 502 : 200);
 }
 
 /**
  * Fetch just the meta fields needed for OG tags from the CMS.
  * Returns null on any error so the caller can fall back to plain asset serving.
  */
-async function fetchLivePost(slug, env) {
+async function fetchLivePost(slug, env, { fresh = false } = {}) {
   const token = String(env.CMS_PUBLIC_TOKEN || "").trim();
   if (!token) return { error: "no-token" };
 
@@ -125,7 +213,7 @@ async function fetchLivePost(slug, env) {
           // Cache only successful lookups. A bare cacheTtl applies to every
           // status, so one transient CMS error was being cached for 5 minutes
           // and replayed on the retry. The retry bypasses the cache entirely.
-          cf: attempt === 0
+          cf: attempt === 0 && !fresh
             ? { cacheEverything: true, cacheTtlByStatus: { "200-299": 300, "404": 60, "400-403": -1, "405-599": -1 } }
             : { cacheTtl: -1 }
         });
@@ -159,7 +247,8 @@ async function fetchLivePost(slug, env) {
  * without needing to execute JavaScript.
  */
 function injectOgTags(htmlRes, post, slug) {
-  const canonical = `${SITE_ORIGIN}/blog/${slug}/`;
+  // No trailing slash: matches the sitemap and every internal link.
+  const canonical = `${SITE_ORIGIN}/blog/${slug}`;
   const pageTitle = post.title
     ? post.title + " | Activo Medical Marketing"
     : "Blog de Marketing Médico | Activo Medical Marketing";
@@ -188,6 +277,18 @@ function injectOgTags(htmlRes, post, slug) {
     .on("#post-title",           { element(el) { if (post.raw) el.setInnerContent(String(post.raw.title || post.title)); } })
     .on("#post-excerpt",         { element(el) { if (post.raw) el.setInnerContent(String(post.raw.excerpt || "")); } })
     .on("#postArticle",          { element(el) { if (post.raw && post.raw.body_html) el.setInnerContent(`<div class="post-body">${post.raw.body_html}</div>`, { html: true }); } })
+    .on("#postBreadcrumbJsonLd", { element(el) {
+      if (!post.raw) return;
+      el.setInnerContent(safeJson({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Inicio", item: `${SITE_ORIGIN}/` },
+          { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE_ORIGIN}/blog` },
+          { "@type": "ListItem", position: 3, name: String(post.raw.title || post.title), item: canonical }
+        ]
+      }), { html: true });
+    } })
     .on("#postSchemaJsonLd",     { element(el) { if (post.raw && post.raw.schema_jsonld) el.setInnerContent(safeJson(post.raw.schema_jsonld), { html: true }); } })
     .on("head",                  { element(el) { if (post.raw) el.append(`<script>window.__CMS_SSR_POST__=${safeJson(post.raw)};</script>`, { html: true }); } })
     .transform(htmlRes);
@@ -246,7 +347,7 @@ function withUtf8Html(res) {
 
 export default {
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(refreshPostCache(env).catch((e) => console.error("refreshPostCache failed: " + e.message)));
+    ctx.waitUntil(syncAllPosts(env).catch((e) => console.error("syncAllPosts failed: " + e.message)));
   },
 
   async fetch(request, env, ctx) {
@@ -257,6 +358,10 @@ export default {
 
       if (!assets || typeof assets.fetch !== "function") {
         return new Response("Assets binding is missing", { status: 500 });
+      }
+
+      if (path === "/api/revalidate") {
+        return handleRevalidate(request, env);
       }
 
       if (path.startsWith("/api/cms/posts")) {
@@ -277,6 +382,10 @@ export default {
       const blogSlug = path.match(/^\/blog\/([^/]+)\/?$/);
       if (blogSlug && !blogSlug[1].includes(".")) {
         const slug = blogSlug[1];
+        // One URL per post: /blog/<slug>/ -> /blog/<slug>
+        if (path.endsWith("/")) {
+          return Response.redirect(`${url.origin}/blog/${slug}${url.search}`, 301);
+        }
         const htmlRes = await assets.fetch(url.origin + "/blog/_blog-post/index.html");
         // Fetch post meta and inject OG tags so Facebook / social crawlers
         // see the correct title, description and cover image without JS.

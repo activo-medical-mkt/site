@@ -20,7 +20,7 @@
     }
   ],
   "triggers": {
-    "crons": ["*/30 * * * *"]
+    "crons": ["*/5 * * * *"]
   },
   "vars": {
     "CMS_API_BASE": "https://app.seermantic.com/api/posts",

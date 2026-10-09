@@ -399,7 +399,7 @@
                 url: 'https://activomedical.com/',
                 logo: {
                     '@type': 'ImageObject',
-                    url: 'https://activomedical.com/Assets/Logos/activo-logo-white.png',
+                    url: 'https://activomedical.com/Assets/Logos/activo-logo-white.svg',
                     width: 130,
                     height: 38
                 }
