@@ -2,25 +2,30 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-WJL56FB8');</script>
-  <!-- End Google Tag Manager -->
-  <!-- Meta Pixel Code -->
+  
+  <!-- Google Tag Manager + Meta Pixel: queued now, loaded after the page has
+       rendered (or on the first interaction) so they stay off the critical path. -->
   <script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+  !function(f){if(f.fbq)return;var n=f.fbq=function(){n.callMethod?
   n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[]}(window);
   fbq('init', '2556815078070378');
   fbq('track', 'PageView');
+  (function () {
+    var loaded = false;
+    function add(src) { var s = document.createElement('script'); s.async = true; s.src = src; document.head.appendChild(s); }
+    function load() {
+      if (loaded) return; loaded = true;
+      add('https://www.googletagmanager.com/gtm.js?id=GTM-WJL56FB8');
+      add('https://connect.facebook.net/en_US/fbevents.js');
+    }
+    ['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(function (e) {
+      window.addEventListener(e, load, { once: true, passive: true });
+    });
+    window.addEventListener('load', function () { setTimeout(load, 2500); });
+  })();
   </script>
   <noscript><img height="1" width="1" style="display:none"
   src="https://www.facebook.com/tr?id=2556815078070378&ev=PageView&noscript=1"
@@ -53,22 +58,12 @@
   <link rel="icon" type="image/png" sizes="96x96" href="/Assets/Logos/favicon-96x96.png">
   <link rel="shortcut icon" href="/Assets/Logos/favicon.ico">
 
-  <link rel="preload" href="Assets/Fonts/MavenPro-Regular.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="preload" href="Assets/Fonts/MavenPro-Bold.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="preload" href="Assets/Fonts/ff-mark-pro-black.otf" as="font" type="font/otf" crossorigin>
-  <link rel="preload" href="Assets/Fonts/Cyber Brush.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="Assets/Fonts/MavenPro-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="Assets/Fonts/MavenPro-Bold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="Assets/Fonts/ff-mark-pro-black.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/sections.css">
 
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VMY8K1WCSL"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-VMY8K1WCSL');
-  </script>
 
   <script type="application/ld+json">
   {
@@ -330,11 +325,11 @@
       <!-- Video background -->
       <div class="hero-video-wrap" aria-hidden="true">
         <video class="hero-video-frame" id="hero-vid"
-          src="Assets/videoplayback.mp4"
+          data-src="Assets/videoplayback.mp4"
           poster="Assets/Images/agencia%20de%20marketing%20para%20profesionales%20de%20la%20salud.jpg"
           muted loop playsinline
           disablepictureinpicture
-          preload="metadata">
+          preload="none">
         </video>
         <div class="hero-video-overlay"></div>
       </div>
@@ -1072,6 +1067,16 @@
       document.addEventListener('visibilitychange', function() {
         if (!document.hidden && v.paused) seekThenPlay();
       });
+
+      // Start fetching the (large) video only after the page has loaded.
+      function attachSource() {
+        if (v.getAttribute('src') || !v.dataset.src) return;
+        v.preload = 'auto';
+        v.src = v.dataset.src;
+        v.load();
+      }
+      if (document.readyState === 'complete') attachSource();
+      else window.addEventListener('load', attachSource);
 
       v.addEventListener('timeupdate', function() {
         if (v.currentTime >= 78 && v.currentTime < 117) { v.currentTime = 117; }
