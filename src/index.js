@@ -17,7 +17,7 @@ function json(body, status) {
  * Fetch just the meta fields needed for OG tags from the CMS.
  * Returns null on any error so the caller can fall back to plain asset serving.
  */
-async function fetchPostMeta(slug, env) {
+async function fetchPost(slug, env) {
   const token = String(env.CMS_PUBLIC_TOKEN || "").trim();
   if (!token) return null;
 
@@ -33,6 +33,7 @@ async function fetchPostMeta(slug, env) {
       },
       cf: { cacheTtl: 300, cacheEverything: true }
     });
+    if (res.status === 404) return { notFound: true };
     if (!res.ok) return null;
 
     const data = await res.json();
@@ -59,7 +60,7 @@ async function fetchPostMeta(slug, env) {
       raw.image || "";
 
     if (!title) return null;
-    return { title, description, image };
+    return { title, description, image, raw };
   } catch (_) {
     return null;
   }
@@ -96,7 +97,18 @@ function injectOgTags(htmlRes, post, slug) {
     .on("#post-twitter-title",   attr("content", pageTitle))
     .on("#post-twitter-desc",    attr("content", desc))
     .on("#post-twitter-image",   attr("content", image))
+    .on("#post-cat-tag",         { element(el) { if (post.raw) el.setInnerContent(String(post.raw.category || "")); } })
+    .on("#post-title",           { element(el) { if (post.raw) el.setInnerContent(String(post.raw.title || post.title)); } })
+    .on("#post-excerpt",         { element(el) { if (post.raw) el.setInnerContent(String(post.raw.excerpt || "")); } })
+    .on("#postArticle",          { element(el) { if (post.raw && post.raw.body_html) el.setInnerContent(`<div class="post-body">${post.raw.body_html}</div>`, { html: true }); } })
+    .on("#postSchemaJsonLd",     { element(el) { if (post.raw && post.raw.schema_jsonld) el.setInnerContent(safeJson(post.raw.schema_jsonld), { html: true }); } })
+    .on("head",                  { element(el) { if (post.raw) el.append(`<script>window.__CMS_SSR_POST__=${safeJson(post.raw)};</script>`, { html: true }); } })
     .transform(htmlRes);
+}
+
+/** JSON safe to embed inside an inline <script>. */
+function safeJson(value) {
+  return JSON.stringify(value).replace(/</g, "\\u003c");
 }
 
 async function handleCmsProxy(request, env, url) {
@@ -177,7 +189,16 @@ export default {
         const htmlRes = await assets.fetch(url.origin + "/blog/_blog-post/index.html");
         // Fetch post meta and inject OG tags so Facebook / social crawlers
         // see the correct title, description and cover image without JS.
-        const post = await fetchPostMeta(slug, env);
+        const post = await fetchPost(slug, env);
+        // Unknown slug: return a real 404 (not a 200 shell) so Google doesn't flag a soft 404.
+        if (post && post.notFound) {
+          const notFound = new HTMLRewriter()
+            .on("#post-robots", { element(el) { el.setAttribute("content", "noindex,follow"); } })
+            .on("#post-canonical", { element(el) { el.remove(); } })
+            .transform(htmlRes);
+          const res404 = withUtf8Html(notFound);
+          return new Response(res404.body, { status: 404, headers: res404.headers });
+        }
         // Always inject — use fetched data or fall back to site defaults
         return withUtf8Html(injectOgTags(htmlRes, post || { title: "", description: "", image: "" }, slug));
       }
