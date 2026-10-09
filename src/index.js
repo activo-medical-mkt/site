@@ -386,6 +386,7 @@ function authorSchema(name) {
     jobTitle: "Especialista en Marketing Digital para el Sector Salud",
     url: `${SITE_ORIGIN}/marketing-medico-tijuana/`,
     worksFor: { "@id": `${SITE_ORIGIN}/#organization` },
+    sameAs: ["https://www.linkedin.com/in/joshuaramirez-l/"],
     alumniOf: { "@type": "CollegeOrUniversity", name: "Universidad Xochicalco" },
     knowsAbout: ["Marketing médico", "SEO", "Google Ads", "SEO local", "Search Marketing"],
     hasCredential: [
