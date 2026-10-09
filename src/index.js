@@ -37,7 +37,12 @@ async function fetchPost(slug, env) {
             "accept": "application/json",
             "x-cms-public-token": token
           },
-          cf: { cacheTtl: 300, cacheEverything: true }
+          // Cache only successful lookups. A bare cacheTtl applies to every
+          // status, so one transient CMS error was being cached for 5 minutes
+          // and replayed on the retry. The retry bypasses the cache entirely.
+          cf: attempt === 0
+            ? { cacheEverything: true, cacheTtlByStatus: { "200-299": 300, "404": 60, "400-403": -1, "405-599": -1 } }
+            : { cacheTtl: -1 }
         });
         if (res.status !== 429 && res.status < 500) break;
       } catch (e) {
@@ -216,6 +221,7 @@ export default {
         // instead of indexing the empty shell as a soft 404. The shell still
         // loads for humans, whose browser can fetch the post client-side.
         if (!post || post.error) {
+          console.error("CMS lookup failed for " + slug + ": " + ((post && post.error) || "unknown"));
           const shell = withUtf8Html(injectOgTags(htmlRes, { title: "", description: "", image: "" }, slug));
           const headers = new Headers(shell.headers);
           headers.set("retry-after", "120");
