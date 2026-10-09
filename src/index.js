@@ -26,13 +26,24 @@ async function fetchPost(slug, env) {
   const apiUrl = `${apiBase}/${encodeURIComponent(slug)}?projectId=${encodeURIComponent(projectId)}`;
 
   try {
-    const res = await fetch(apiUrl, {
-      headers: {
-        "accept": "application/json",
-        "x-cms-public-token": token
-      },
-      cf: { cacheTtl: 300, cacheEverything: true }
-    });
+    // Retry once on network errors / 429 / 5xx so a transient CMS hiccup
+    // doesn't leave a crawler with an empty shell.
+    let res;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        res = await fetch(apiUrl, {
+          headers: {
+            "accept": "application/json",
+            "x-cms-public-token": token
+          },
+          cf: { cacheTtl: 300, cacheEverything: true }
+        });
+        if (res.status !== 429 && res.status < 500) break;
+      } catch (_) {
+        res = null;
+      }
+    }
+    if (!res) return null;
     if (res.status === 404) return { notFound: true };
     if (!res.ok) return null;
 
@@ -199,8 +210,21 @@ export default {
           const res404 = withUtf8Html(notFound);
           return new Response(res404.body, { status: 404, headers: res404.headers });
         }
-        // Always inject — use fetched data or fall back to site defaults
-        return withUtf8Html(injectOgTags(htmlRes, post || { title: "", description: "", image: "" }, slug));
+        // CMS lookup failed (not a 404): answer 503 so Google retries later
+        // instead of indexing the empty shell as a soft 404. The shell still
+        // loads for humans, whose browser can fetch the post client-side.
+        if (!post) {
+          const shell = withUtf8Html(injectOgTags(htmlRes, { title: "", description: "", image: "" }, slug));
+          const headers = new Headers(shell.headers);
+          headers.set("retry-after", "120");
+          headers.set("cache-control", "no-store");
+          headers.set("x-ssr", "cms-unavailable");
+          return new Response(shell.body, { status: 503, headers });
+        }
+        const ok = withUtf8Html(injectOgTags(htmlRes, post, slug));
+        const okHeaders = new Headers(ok.headers);
+        okHeaders.set("x-ssr", "hit");
+        return new Response(ok.body, { status: ok.status, headers: okHeaders });
       }
 
       // All other requests: serve static assets as-is
