@@ -357,12 +357,7 @@ function articleSchema(post, canonical) {
     url: canonical,
     mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
     inLanguage: "es",
-    author: {
-      "@type": "Person",
-      name: author.name || (raw.author && raw.author.name) || "Joshua Ramírez",
-      url: `${SITE_ORIGIN}/marketing-medico-tijuana/`,
-      worksFor: { "@id": `${SITE_ORIGIN}/#organization` }
-    },
+    author: authorSchema(author.name || (raw.author && raw.author.name) || ""),
     publisher: {
       "@type": "Organization",
       "@id": `${SITE_ORIGIN}/#organization`,
@@ -370,6 +365,41 @@ function articleSchema(post, canonical) {
       url: `${SITE_ORIGIN}/`,
       logo: { "@type": "ImageObject", url: `${SITE_ORIGIN}/Assets/Logos/activo-logo-white.svg` }
     }
+  };
+}
+
+/**
+ * Joshua's author entity. Same @id as the founder on the home and landing
+ * pages, so search engines and AI systems resolve every byline to one person
+ * with his credentials. Other authors keep a plain Person.
+ */
+const AUTHOR_ID = `${SITE_ORIGIN}/#joshua-ramirez`;
+function authorSchema(name) {
+  const normalized = String(name || "").normalize("NFD").replace(/[̀-ͯ]/g, "").trim().toLowerCase();
+  if (normalized && normalized !== "joshua ramirez") {
+    return { "@type": "Person", name };
+  }
+  return {
+    "@type": "Person",
+    "@id": AUTHOR_ID,
+    name: "Joshua Ramírez",
+    jobTitle: "Especialista en Marketing Digital para el Sector Salud",
+    url: `${SITE_ORIGIN}/marketing-medico-tijuana/`,
+    worksFor: { "@id": `${SITE_ORIGIN}/#organization` },
+    alumniOf: { "@type": "CollegeOrUniversity", name: "Universidad Xochicalco" },
+    knowsAbout: ["Marketing médico", "SEO", "Google Ads", "SEO local", "Search Marketing"],
+    hasCredential: [
+      {
+        "@type": "EducationalOccupationalCredential",
+        credentialCategory: "degree",
+        name: "Maestría en Mercadotecnia",
+        recognizedBy: { "@type": "CollegeOrUniversity", name: "Universidad Xochicalco" }
+      },
+      { "@type": "EducationalOccupationalCredential", credentialCategory: "degree", name: "Licenciatura en Administración de Empresas" },
+      { "@type": "EducationalOccupationalCredential", credentialCategory: "degree", name: "Licenciatura en Comercio Internacional" },
+      { "@type": "EducationalOccupationalCredential", credentialCategory: "certification", name: "Google Ads Certification" },
+      { "@type": "EducationalOccupationalCredential", credentialCategory: "certification", name: "Google Analytics 4 Certification" }
+    ]
   };
 }
 
