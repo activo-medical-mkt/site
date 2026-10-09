@@ -19,7 +19,7 @@ function json(body, status) {
  */
 async function fetchPost(slug, env) {
   const token = String(env.CMS_PUBLIC_TOKEN || "").trim();
-  if (!token) return null;
+  if (!token) return { error: "no-token" };
 
   const apiBase = String(env.CMS_API_BASE || DEFAULT_CMS_API).replace(/\/+$/, "");
   const projectId = String(env.CMS_PROJECT_ID || DEFAULT_PROJECT_ID);
@@ -29,6 +29,7 @@ async function fetchPost(slug, env) {
     // Retry once on network errors / 429 / 5xx so a transient CMS hiccup
     // doesn't leave a crawler with an empty shell.
     let res;
+    let lastErr = "";
     for (let attempt = 0; attempt < 2; attempt++) {
       try {
         res = await fetch(apiUrl, {
@@ -39,13 +40,14 @@ async function fetchPost(slug, env) {
           cf: { cacheTtl: 300, cacheEverything: true }
         });
         if (res.status !== 429 && res.status < 500) break;
-      } catch (_) {
+      } catch (e) {
         res = null;
+        lastErr = String((e && e.message) || e).slice(0, 80);
       }
     }
-    if (!res) return null;
+    if (!res) return { error: "fetch-failed: " + lastErr };
     if (res.status === 404) return { notFound: true };
-    if (!res.ok) return null;
+    if (!res.ok) return { error: "cms-status-" + res.status };
 
     const data = await res.json();
     // Unwrap various response envelope shapes
@@ -70,10 +72,10 @@ async function fetchPost(slug, env) {
       raw.cover_image || raw.coverImage ||
       raw.image || "";
 
-    if (!title) return null;
+    if (!title) return { error: "no-title" };
     return { title, description, image, raw };
-  } catch (_) {
-    return null;
+  } catch (e) {
+    return { error: "exception: " + String((e && e.message) || e).slice(0, 80) };
   }
 }
 
@@ -213,12 +215,13 @@ export default {
         // CMS lookup failed (not a 404): answer 503 so Google retries later
         // instead of indexing the empty shell as a soft 404. The shell still
         // loads for humans, whose browser can fetch the post client-side.
-        if (!post) {
+        if (!post || post.error) {
           const shell = withUtf8Html(injectOgTags(htmlRes, { title: "", description: "", image: "" }, slug));
           const headers = new Headers(shell.headers);
           headers.set("retry-after", "120");
           headers.set("cache-control", "no-store");
           headers.set("x-ssr", "cms-unavailable");
+          headers.set("x-ssr-reason", (post && post.error) || "unknown");
           return new Response(shell.body, { status: 503, headers });
         }
         const ok = withUtf8Html(injectOgTags(htmlRes, post, slug));
