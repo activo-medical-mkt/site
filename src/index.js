@@ -52,7 +52,12 @@ async function fetchPost(slug, env) {
     }
     if (!res) return { error: "fetch-failed: " + lastErr };
     if (res.status === 404) return { notFound: true };
-    if (!res.ok) return { error: "cms-status-" + res.status };
+    if (!res.ok) {
+      let detail = "";
+      try { detail = (await res.text()).replace(/\s+/g, " ").slice(0, 300); } catch (_) {}
+      const h = ["cf-mitigated", "server", "cf-ray", "content-type"].map(k => k + "=" + res.headers.get(k)).join(" ");
+      return { error: "cms-status-" + res.status + " [" + h + "] " + detail };
+    }
 
     const data = await res.json();
     // Unwrap various response envelope shapes
