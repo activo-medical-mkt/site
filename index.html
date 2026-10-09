@@ -75,12 +75,15 @@
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "Organization",
+        "@type": ["Organization", "ProfessionalService"],
         "@id": "https://activomedical.com/#organization",
         "name": "Activo Medical Marketing",
         "alternateName": ["Activo Medical", "Activo Marketing Médico"],
         "description": "Agencia de marketing digital para médicos, clínicas y especialistas en México.",
         "url": "https://activomedical.com/",
+        "address": { "@type": "PostalAddress", "addressLocality": "Tijuana", "addressRegion": "Baja California", "addressCountry": "MX" },
+        "geo": { "@type": "GeoCoordinates", "latitude": 32.5298, "longitude": -117.0215 },
+        "areaServed": ["México", "Tijuana", "Guadalajara", "San Diego", "Southern California"],
         "logo": {
           "@type": "ImageObject",
           "url": "https://activomedical.com/Assets/Logos/activo-logo-white.png",
