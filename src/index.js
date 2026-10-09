@@ -137,6 +137,45 @@ async function syncAllPosts(env) {
   console.log(`syncAllPosts: ${listed.size} published, ${stored} stored, ${deleted} deleted, ${failed} failed`);
 }
 
+/**
+ * /sitemap.xml = the static sitemap (pages) + one entry per published post in
+ * KV, so new posts are listed automatically. lastmod comes from the CMS
+ * updated_at stored with each KV copy.
+ */
+async function handleSitemap(request, env) {
+  const base = await env.ASSETS.fetch(new URL("/sitemap.xml", request.url));
+  if (!base.ok || !env.POSTS_CACHE) return base;
+  let xml = await base.text();
+
+  const entries = [];
+  let cursor;
+  do {
+    const page = await env.POSTS_CACHE.list({ prefix: KV_PREFIX, cursor });
+    for (const key of page.keys) {
+      const slug = key.name.slice(KV_PREFIX.length);
+      if (!/^[a-z0-9-]+$/i.test(slug)) continue;
+      const updated = String((key.metadata && key.metadata.updated_at) || "").slice(0, 10);
+      entries.push(
+        "  <url>\n" +
+        `    <loc>${SITE_ORIGIN}/blog/${slug}</loc>\n` +
+        (/^\d{4}-\d{2}-\d{2}$/.test(updated) ? `    <lastmod>${updated}</lastmod>\n` : "") +
+        "    <changefreq>monthly</changefreq>\n" +
+        "    <priority>0.7</priority>\n" +
+        "  </url>\n"
+      );
+    }
+    cursor = page.list_complete ? null : page.cursor;
+  } while (cursor);
+
+  xml = xml.replace("</urlset>", entries.join("") + "</urlset>");
+  return new Response(xml, {
+    headers: {
+      "content-type": "application/xml; charset=utf-8",
+      "cache-control": "public, max-age=300"
+    }
+  });
+}
+
 async function safeEqual(a, b) {
   const enc = new TextEncoder();
   const [x, y] = await Promise.all([
@@ -284,7 +323,7 @@ function injectOgTags(htmlRes, post, slug) {
         "@type": "BreadcrumbList",
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "Inicio", item: `${SITE_ORIGIN}/` },
-          { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE_ORIGIN}/blog` },
+          { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE_ORIGIN}/blog/` },
           { "@type": "ListItem", position: 3, name: String(post.raw.title || post.title), item: canonical }
         ]
       }), { html: true });
@@ -358,6 +397,10 @@ export default {
 
       if (!assets || typeof assets.fetch !== "function") {
         return new Response("Assets binding is missing", { status: 500 });
+      }
+
+      if (path === "/sitemap.xml") {
+        return handleSitemap(request, env);
       }
 
       if (path === "/api/revalidate") {

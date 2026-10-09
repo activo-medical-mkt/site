@@ -56,6 +56,10 @@ const allFiles = walk(DEST);
 
 const cssFiles = allFiles.filter(f => f.endsWith('.css'));
 const jsFiles  = allFiles.filter(f => f.endsWith('.js') && !JS_SKIP.has(path.basename(f)));
+// Social-share/schema images stay JPG: they're referenced URL-encoded (so the
+// WebP rename below wouldn't catch them) and Facebook/LinkedIn handle JPG best.
+const KEEP_ORIGINAL = new Set(['agencia de marketing para profesionales de la salud.jpg']);
+
 // Images in Assets/ only — skip generated/ and favicon PNGs (must stay as PNG for Google)
 const imgFiles = allFiles.filter(f => {
   const ext = path.extname(f).toLowerCase();
@@ -63,7 +67,8 @@ const imgFiles = allFiles.filter(f => {
   return (ext === '.png' || ext === '.jpg' || ext === '.jpeg') &&
          f.includes(`${path.sep}Assets${path.sep}`) &&
          !f.includes(`${path.sep}generated${path.sep}`) &&
-         !name.startsWith('favicon');  // keep favicon-*.png as PNG (Google doesn't support WebP favicons)
+         !name.startsWith('favicon') &&  // keep favicon-*.png as PNG (Google doesn't support WebP favicons)
+         !KEEP_ORIGINAL.has(name);
 });
 
 // ── 1. Minify CSS ──────────────────────────────────────────────────────────
