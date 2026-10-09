@@ -13,6 +13,15 @@
     "directory": "public",
     "binding": "ASSETS"
   },
+  "kv_namespaces": [
+    {
+      "binding": "POSTS_CACHE",
+      "id": "68c5354d56124b10885b868854e1029f"
+    }
+  ],
+  "triggers": {
+    "crons": ["*/30 * * * *"]
+  },
   "vars": {
     "CMS_API_BASE": "https://app.seermantic.com/api/posts",
     "CMS_PROJECT_ID": "65bb6d01"

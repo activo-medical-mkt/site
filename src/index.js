@@ -13,7 +13,7 @@ function json(body, status) {
   });
 }
 
-/** Turn a CMS response (live or build-time snapshot) into { title, description, image, raw }. */
+/** Turn a CMS response (live or KV copy) into { title, description, image, raw }. */
 function parsePost(data) {
   // Unwrap various response envelope shapes
   const raw = (data && (
@@ -41,22 +41,60 @@ function parsePost(data) {
   return { title, description, image, raw };
 }
 
+const KV_PREFIX = "post:";
+
 /**
- * Live CMS first (always fresh). If the CMS is unreachable or challenges the
- * request (e.g. Bot Fight Mode blocking Googlebot-originated subrequests), fall
- * back to the copy of the post that build.js baked into /blog/_data/<slug>.json.
+ * Live CMS first (always fresh). The CMS zone's Bot Fight Mode challenges
+ * requests that originate from Googlebot, so when the live call fails we serve
+ * the last good copy from KV. Copies are written on every successful live
+ * fetch and refreshed by the scheduled job (which Googlebot never triggers).
  */
-async function fetchPost(slug, env, assets, origin) {
+async function fetchPost(slug, env, ctx) {
+  const kv = env.POSTS_CACHE;
   const live = await fetchLivePost(slug, env);
-  if (!live || !live.error) return live;
-  try {
-    const res = await assets.fetch(`${origin}/blog/_data/${encodeURIComponent(slug)}.json`);
-    if (res.ok) {
-      const snap = parsePost(await res.json());
-      if (!snap.error) return snap;
-    }
-  } catch (_) {}
+  if (live && live.notFound) {
+    if (kv) ctx.waitUntil(kv.delete(KV_PREFIX + slug).catch(() => {}));
+    return live;
+  }
+  if (live && !live.error) {
+    if (kv) ctx.waitUntil(kv.put(KV_PREFIX + slug, JSON.stringify(live.data)).catch(() => {}));
+    return live;
+  }
+  if (kv) {
+    try {
+      const cached = await kv.get(KV_PREFIX + slug, "json");
+      if (cached) {
+        const post = parsePost(cached);
+        if (!post.error) return post;
+      }
+    } catch (_) {}
+  }
   return live;
+}
+
+/** Cron: pull every published post into KV. */
+async function refreshPostCache(env) {
+  const kv = env.POSTS_CACHE;
+  const token = String(env.CMS_PUBLIC_TOKEN || "").trim();
+  if (!kv || !token) return;
+  const apiBase = String(env.CMS_API_BASE || DEFAULT_CMS_API).replace(/\/+$/, "");
+  const projectId = String(env.CMS_PROJECT_ID || DEFAULT_PROJECT_ID);
+  const headers = { accept: "application/json", "user-agent": "ActivoMedical-Site-Worker/1.0", "x-cms-public-token": token };
+  const slugs = [];
+  for (let page = 1; page <= 50; page++) {
+    const res = await fetch(`${apiBase}?projectId=${encodeURIComponent(projectId)}&page=${page}&per_page=50`, { headers });
+    if (!res.ok) throw new Error("list failed: " + res.status);
+    const data = await res.json();
+    const posts = data.posts || data.items || [];
+    posts.forEach((p) => p && p.slug && !slugs.includes(p.slug) && slugs.push(p.slug));
+    if (posts.length < 50 || slugs.length >= (data.total || Infinity)) break;
+  }
+  for (const slug of slugs) {
+    const res = await fetch(`${apiBase}/${encodeURIComponent(slug)}?projectId=${encodeURIComponent(projectId)}`, { headers });
+    if (res.ok) await kv.put(KV_PREFIX + slug, await res.text());
+    else console.error("refreshPostCache " + slug + ": " + res.status);
+  }
+  console.log("refreshPostCache: stored " + slugs.length + " posts");
 }
 
 /**
@@ -106,7 +144,10 @@ async function fetchLivePost(slug, env) {
       return { error: "cms-status-" + res.status + " [" + h + "] " + detail };
     }
 
-    return parsePost(await res.json());
+    const data = await res.json();
+    const parsed = parsePost(data);
+    if (!parsed.error) parsed.data = data;
+    return parsed;
   } catch (e) {
     return { error: "exception: " + String((e && e.message) || e).slice(0, 80) };
   }
@@ -204,7 +245,11 @@ function withUtf8Html(res) {
 }
 
 export default {
-  async fetch(request, env) {
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(refreshPostCache(env).catch((e) => console.error("refreshPostCache failed: " + e.message)));
+  },
+
+  async fetch(request, env, ctx) {
     try {
       const url = new URL(request.url);
       const path = url.pathname;
@@ -235,7 +280,7 @@ export default {
         const htmlRes = await assets.fetch(url.origin + "/blog/_blog-post/index.html");
         // Fetch post meta and inject OG tags so Facebook / social crawlers
         // see the correct title, description and cover image without JS.
-        const post = await fetchPost(slug, env, assets, url.origin);
+        const post = await fetchPost(slug, env, ctx);
         // Unknown slug: return a real 404 (not a 200 shell) so Google doesn't flag a soft 404.
         if (post && post.notFound) {
           const notFound = new HTMLRewriter()
