@@ -328,9 +328,49 @@ function injectOgTags(htmlRes, post, slug) {
         ]
       }), { html: true });
     } })
-    .on("#postSchemaJsonLd",     { element(el) { if (post.raw && post.raw.schema_jsonld) el.setInnerContent(safeJson(post.raw.schema_jsonld), { html: true }); } })
+    .on("#postSchemaJsonLd",     { element(el) { if (post.raw) el.setInnerContent(safeJson(articleSchema(post, canonical)), { html: true }); } })
     .on("head",                  { element(el) { if (post.raw) el.append(`<script>window.__CMS_SSR_POST__=${safeJson(post.raw)};</script>`, { html: true }); } })
     .transform(htmlRes);
+}
+
+/**
+ * The site owns its identity in structured data: whatever the CMS sends, the
+ * Article points at this canonical, is published by Activo Medical Marketing
+ * (linked to the home page Organization), is in Spanish, and has an author URL.
+ */
+function articleSchema(post, canonical) {
+  const raw = post.raw || {};
+  const base = raw.schema_jsonld && typeof raw.schema_jsonld === "object" && !Array.isArray(raw.schema_jsonld)
+    ? { ...raw.schema_jsonld }
+    : {};
+  delete base.keywords; // CMS fills this with the article's H2 headings
+  const author = base.author && typeof base.author === "object" && !Array.isArray(base.author) ? base.author : {};
+  return {
+    ...base,
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: base.headline || raw.title || post.title,
+    description: base.description || post.description || undefined,
+    image: base.image && base.image.length ? base.image : (post.image ? [post.image] : [FALLBACK_IMAGE]),
+    datePublished: base.datePublished || raw.published_at || undefined,
+    dateModified: base.dateModified || raw.updated_at || base.datePublished || raw.published_at || undefined,
+    url: canonical,
+    mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
+    inLanguage: "es",
+    author: {
+      "@type": "Person",
+      name: author.name || (raw.author && raw.author.name) || "Joshua Ramírez",
+      url: `${SITE_ORIGIN}/marketing-medico-tijuana/`,
+      worksFor: { "@id": `${SITE_ORIGIN}/#organization` }
+    },
+    publisher: {
+      "@type": "Organization",
+      "@id": `${SITE_ORIGIN}/#organization`,
+      name: "Activo Medical Marketing",
+      url: `${SITE_ORIGIN}/`,
+      logo: { "@type": "ImageObject", url: `${SITE_ORIGIN}/Assets/Logos/activo-logo-white.svg` }
+    }
+  };
 }
 
 /** JSON safe to embed inside an inline <script>. */
