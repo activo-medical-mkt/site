@@ -1,0 +1,13 @@
+{
+  "_help": "Copy to audit/profiles/<site>.json and fill in. Keys starting with _ are ignored. Every key is optional.",
+  "site_name": "Example Co",
+  "host": "example.com",
+  "language": "en",
+  "ymyl": "low",
+  "entities": ["Example Co", "primary service", "primary city", "category keyword"],
+  "author_names": ["Jane"],
+  "mask_terms": ["City A", "City B"],
+  "extra_vague": { "gold standard": "gold standard" },
+  "extra_risk": ["clinically proven"],
+  "authority_domain_regex": "\.gov$|who\.int|nih\.gov"
+}

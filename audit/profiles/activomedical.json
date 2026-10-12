@@ -1,0 +1,12 @@
+{
+  "_help": "Profile for activomedical.com (language is auto-detected; set explicitly to force).",
+  "site_name": "Activo Medical Marketing",
+  "host": "activomedical.com",
+  "language": "es",
+  "ymyl": "medium",
+  "entities": ["Activo Medical", "Tijuana", "Guadalajara", "SEO", "Google Ads", "Google Maps", "páginas web", "médicos", "clínicas",
+               "dentistas", "cirujanos plásticos", "COFEPRIS", "WhatsApp", "español", "inglés", "San Diego"],
+  "author_names": ["Joshua"],
+  "mask_terms": ["Tijuana", "Guadalajara", "Jalisco", "Baja California", "ZMG", "Zapopan", "San Diego"],
+  "extra_risk": ["resultados desde la primera semana"]
+}
