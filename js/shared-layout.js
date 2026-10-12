@@ -319,7 +319,7 @@
       '<div class="wa-widget" id="wa-widget">',
       '  <div class="wa-panel" id="wa-panel" hidden>',
       '    <div class="wa-panel-head">',
-      '      <img src="/Assets/WhatsApp.svg.png" alt="WhatsApp" width="28" height="28" loading="lazy" decoding="async">',
+      '      <img src="/Assets/icono-whatsapp.webp" alt="WhatsApp" width="28" height="28" loading="lazy" decoding="async">',
       '      <div>',
       '        <strong>Iniciar una conversacion</strong>',
       '        <p>Hola. Escribenos y te responderemos lo antes posible.</p>',
@@ -328,7 +328,7 @@
       '    <a class="wa-panel-cta" href="https://api.whatsapp.com/send?phone=526647149135" target="_blank" rel="noopener noreferrer">Abrir WhatsApp</a>',
       '  </div>',
       '  <button class="wa-fab" id="wa-fab" type="button" aria-expanded="false" aria-controls="wa-panel" aria-label="Abrir chat de WhatsApp">',
-      '    <img src="/Assets/WhatsApp.svg.png" alt="WhatsApp" width="30" height="30" loading="lazy" decoding="async">',
+      '    <img src="/Assets/icono-whatsapp.webp" alt="WhatsApp" width="30" height="30" loading="lazy" decoding="async">',
       '  </button>',
       '</div>'
     ].join('');

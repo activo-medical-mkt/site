@@ -14,6 +14,8 @@ const EXCLUDE = new Set([
   'lib', 'src', '_redirects',
   '.env', '.env.local', '.env.production',
   'package.json', 'package-lock.json',
+  // internal working files: never ship these
+  'audit', 'Optimizing On-Page Content for Search & AI Discovery.pdf',
 ]);
 
 // Clean & recreate
@@ -58,7 +60,11 @@ const cssFiles = allFiles.filter(f => f.endsWith('.css'));
 const jsFiles  = allFiles.filter(f => f.endsWith('.js') && !JS_SKIP.has(path.basename(f)));
 // Social-share/schema images stay JPG: they're referenced URL-encoded (so the
 // WebP rename below wouldn't catch them) and Facebook/LinkedIn handle JPG best.
-const KEEP_ORIGINAL = new Set(['agencia de marketing para profesionales de la salud.jpg']);
+const KEEP_ORIGINAL = new Set([
+  'medico-usando-tableta-digital.webp',
+  // Email signatures use PNG copies; site pages use the WebP versions.
+  'profile.png', 'logo-white.png',
+]);
 
 // Images in Assets/ only — skip generated/ and favicon PNGs (must stay as PNG for Google)
 const imgFiles = allFiles.filter(f => {
@@ -112,7 +118,10 @@ async function convertImages() {
   for (const src of imgFiles) {
     const webpPath = src.replace(/\.(png|jpg|jpeg)$/i, '.webp');
     try {
-      await sharp(src).webp({ quality: 82 }).toFile(webpPath);
+      // Reuse an optimized source WebP if one already exists.
+      if (!fs.existsSync(webpPath)) {
+        await sharp(src).webp({ quality: 82, effort: 6 }).toFile(webpPath);
+      }
       // Remove original from public/ (source still has it)
       fs.unlinkSync(src);
       // Track relative path mapping for HTML rewriting
@@ -127,7 +136,10 @@ async function convertImages() {
   console.log(`🖼  Images → WebP (${imgCount} converted)`);
 
   // Rewrite HTML and JS src/srcset references
-  const rewriteFiles = allFiles.filter(f => f.endsWith('.html') || f.endsWith('.js'));
+  const rewriteFiles = allFiles.filter(f =>
+    (f.endsWith('.html') || f.endsWith('.js') || f.endsWith('.css')) &&
+    !path.basename(f).startsWith('email-signature')
+  );
   let htmlCount = 0;
   for (const htmlPath of rewriteFiles) {
     let html = fs.readFileSync(htmlPath, 'utf8');
@@ -136,7 +148,7 @@ async function convertImages() {
     for (const [relOld, relNew] of converted) {
       // Match both quoted attribute values and unquoted occurrences
       const oldName = path.basename(relOld);   // e.g. GDL-desktop.png
-      const newName = path.basename(relNew);   // e.g. GDL-desktop.webp
+      const newName = path.basename(relNew);   // e.g. sitio-web-medico-traumatologo-guadalajara-escritorio.webp
       if (html.includes(oldName)) {
         html = html.split(oldName).join(newName);
         changed = true;

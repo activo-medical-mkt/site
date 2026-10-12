@@ -1,7 +1,27 @@
 const DEFAULT_CMS_API = "https://app.seermantic.com/api/posts";
 const DEFAULT_PROJECT_ID = "65bb6d01";
-const FALLBACK_IMAGE = "https://activomedical.com/Assets/Images/agencia%20de%20marketing%20para%20profesionales%20de%20la%20salud.jpg";
+const FALLBACK_IMAGE = "https://activomedical.com/Assets/Images/medico-usando-tableta-digital-og-1200x630.webp";
 const SITE_ORIGIN = "https://activomedical.com";
+
+/**
+ * Image files were renamed to descriptive names. Old URLs (indexed, shared,
+ * hotlinked) keep working with a permanent redirect.
+ */
+const LEGACY_ASSETS = {
+  "/Assets/profile.webp": "/Assets/joshua-ramirez-especialista-marketing-medico.webp",
+  "/Assets/WhatsApp.svg.webp": "/Assets/icono-whatsapp.webp",
+  "/Assets/WhatsApp.svg.png": "/Assets/icono-whatsapp.webp",
+  "/Assets/Images/agencia de marketing para profesionales de la salud.jpg": "/Assets/Images/medico-usando-tableta-digital-og-1200x630.webp",
+  "/Assets/Images/agencia de marketing para profesionales de la salud.webp": "/Assets/Images/medico-usando-tableta-digital.webp",
+  "/Assets/Images/google-ads-interface-6078ab3859a0f-scaled.webp": "/Assets/Images/google-ads-crear-campana.webp",
+  "/Assets/Portfolio/GDL-desktop.webp": "/Assets/Portfolio/sitio-web-medico-traumatologo-guadalajara-escritorio.webp",
+  "/Assets/Portfolio/GDL-mobile.webp": "/Assets/Portfolio/sitio-web-medico-traumatologo-guadalajara-movil.webp",
+  "/Assets/Portfolio/tijuana-desktop.webp": "/Assets/Portfolio/sitio-web-medico-traumatologo-tijuana-escritorio.webp",
+  "/Assets/Portfolio/tijuana-mobile.webp": "/Assets/Portfolio/sitio-web-medico-traumatologo-tijuana-movil.webp",
+  "/Assets/Portfolio/grandviewhealthparters-desktop.webp": "/Assets/Portfolio/sitio-web-clinica-quiropractica-chicago-escritorio.webp",
+  "/Assets/Portfolio/grandviewhealthparters-mobile.webp": "/Assets/Portfolio/sitio-web-clinica-quiropractica-chicago-movil.webp"
+};
+
 
 function json(body, status) {
   return new Response(JSON.stringify(body), {
@@ -530,6 +550,60 @@ async function renderBlogIndex(htmlRes, env) {
     .transform(htmlRes);
 }
 
+/**
+ * Articles shown on each landing/service page ("Artículos relacionados").
+ * The slugs are editorial; title, cover, excerpt and date are read from the
+ * CMS copies in KV on every request, so they never go stale. The static HTML
+ * keeps the same cards as a fallback.
+ */
+const PAGE_ARTICLES = {
+  "/marketing-cirujanos-plasticos-tijuana/": ["turismo-medico-tijuana-atraer-pacientes", "como-navegan-pacientes-clinicas-tijuana-marketing-medico", "atraer-pacientes-estados-unidos-consultorio-tijuana"],
+  "/marketing-dentistas-tijuana/": ["turismo-medico-tijuana-atraer-pacientes", "atraer-pacientes-estados-unidos-consultorio-tijuana", "marketing-para-doctores-tijuana"],
+  "/marketing-medico-guadalajara/google-ads-medicos/": ["por-que-mis-anuncios-de-marketing-digital-no-funcionan", "recibes-muchos-mensajes-pero-pocos-agendan", "cuanto-tarda-en-dar-resultados-el-marketing-digital-medico"],
+  "/marketing-medico-guadalajara/": ["que-tipo-de-marketing-le-conviene-a-tu-consultorio", "que-es-aeo-inteligencia-artificial-recomiende-consultorio-medico", "cuanto-tarda-en-dar-resultados-el-marketing-digital-medico"],
+  "/marketing-medico-guadalajara/paginas-web-para-medicos/": ["marketing-medico-y-manejo-de-datos-sensibles", "conviene-invertir-en-doctoralia-y-top-doctors", "como-navegan-pacientes-clinicas-tijuana-marketing-medico"],
+  "/marketing-medico-guadalajara/seo-para-medicos/": ["que-es-aeo-inteligencia-artificial-recomiende-consultorio-medico", "seo-medico-tijuana-atraer-pacientes-google", "cuanto-tarda-en-dar-resultados-el-marketing-digital-medico"],
+  "/marketing-medico-tijuana/google-ads-medicos/": ["por-que-mis-anuncios-de-marketing-digital-no-funcionan", "recibes-muchos-mensajes-pero-pocos-agendan", "atraer-pacientes-estados-unidos-consultorio-tijuana"],
+  "/marketing-medico-tijuana/": ["marketing-para-doctores-tijuana", "turismo-medico-tijuana-atraer-pacientes", "que-tipo-de-marketing-le-conviene-a-tu-consultorio"],
+  "/marketing-medico-tijuana/paginas-web-para-medicos/": ["marketing-medico-y-manejo-de-datos-sensibles", "conviene-invertir-en-doctoralia-y-top-doctors", "como-navegan-pacientes-clinicas-tijuana-marketing-medico"],
+  "/marketing-medico-tijuana/seo-para-medicos/": ["seo-medico-tijuana-atraer-pacientes-google", "que-es-aeo-inteligencia-artificial-recomiende-consultorio-medico", "cuanto-tarda-en-dar-resultados-el-marketing-digital-medico"]
+};
+
+function relatedCatClass(category) {
+  const k = String(category || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  if (k.includes("seo")) return "recent-post-cat--seo";
+  if (k.includes("turismo")) return "recent-post-cat--turismo";
+  if (k.includes("reputacion")) return "recent-post-cat--reputacion";
+  return "recent-post-cat--default";
+}
+
+function relatedCardHtml(p) {
+  const href = "/blog/" + escHtml(p.slug);
+  const cover = p.hero_thumb || p.hero_image;
+  const media = cover
+    ? `<img src="${escHtml(cover)}" alt="Portada del artículo: ${escHtml(p.title)}" width="640" height="420" loading="lazy" decoding="async">`
+    : '<div class="recent-post-media-fallback"></div>';
+  let date = "";
+  try { date = new Date(p.published_at).toLocaleDateString("es-MX", { day: "numeric", month: "short", year: "numeric" }); } catch (_) {}
+  return `<article class="recent-post-card"><a class="recent-post-media" href="${href}" tabindex="-1" aria-hidden="true">${media}</a>` +
+    `<div class="recent-post-body"><span class="recent-post-cat ${relatedCatClass(p.category)}">${escHtml(p.category || "Blog")}</span>` +
+    `<h3 class="recent-post-title"><a href="${href}">${escHtml(p.title)}</a></h3>` +
+    `<p class="recent-post-excerpt">${escHtml(String(p.excerpt || "").replace(/\s+/g, " ").trim())}</p>` +
+    `<div class="recent-post-meta">${escHtml(date)}</div></div></article>`;
+}
+
+/** Fill #related-articles-grid from the CMS copies; leave the static cards if nothing is available. */
+async function renderRelatedArticles(htmlRes, slugs, env) {
+  const all = await getAllPosts(env).catch(() => []);
+  const bySlug = new Map(all.map((p) => [p.slug, p]));
+  const picks = slugs.map((slug) => bySlug.get(slug)).filter(Boolean);
+  if (!picks.length) return htmlRes;
+  const html = picks.map(relatedCardHtml).join("");
+  return new HTMLRewriter()
+    .on("#related-articles-grid", { element(el) { el.setInnerContent(html, { html: true }); } })
+    .transform(htmlRes);
+}
+
 /** Home page: link the three newest posts in the HTML (the cards are filled by JS). */
 async function renderHome(htmlRes, env) {
   const posts = (await getAllPosts(env).catch(() => [])).slice(0, 3);
@@ -667,6 +741,12 @@ export default {
         return handleSitemap(request, env);
       }
 
+      let legacyPath = path;
+      try { legacyPath = decodeURIComponent(path); } catch (_) {}
+      if (LEGACY_ASSETS[legacyPath]) {
+        return Response.redirect(url.origin + encodeURI(LEGACY_ASSETS[legacyPath]), 301);
+      }
+
       if (path === "/api/revalidate") {
         return handleRevalidate(request, env);
       }
@@ -684,6 +764,15 @@ export default {
       if (path === "/blog" || path === "/blog/") {
         const index = withUtf8Html(await assets.fetch(url.origin + "/blog/blog/index.html"));
         return renderBlogIndex(index, env);
+      }
+
+      const pageKey = path.endsWith("/") ? path : path + "/";
+      if (PAGE_ARTICLES[pageKey]) {
+        const pageRes = await assets.fetch(request);
+        if (pageRes.ok && (pageRes.headers.get("content-type") || "").includes("text/html")) {
+          return renderRelatedArticles(withUtf8Html(pageRes), PAGE_ARTICLES[pageKey], env);
+        }
+        return pageRes;
       }
 
       if (path === "/") {

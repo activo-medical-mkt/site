@@ -21,7 +21,7 @@ Use this document to keep style, spacing, tone, and component behavior consisten
 ## Brand Assets
 - Logos (prefer SVG over PNG):
   - Assets/Logos/activo-logo-white.svg ← canonical white logo (SVG, preferred)
-  - Assets/Logos/logo-white.png
+  - Assets/Logos/logo-white.webp
   - Assets/Logos/activo-logo-white.png
 - Favicon set:
   - Assets/Logos/favicon.ico
@@ -34,9 +34,9 @@ Use this document to keep style, spacing, tone, and component behavior consisten
   - Assets/Icons/icon-whatsapp.svg
   - Assets/Icons/icon-globe.svg
 - Photography (original / EXIF-tagged, not stock):
-  - Assets/Images/Untitled-1.jpg — team meeting / hero brand overlay
+  - Assets/Images/Untitled-1.webp — team meeting / hero brand overlay
   - Assets/Images/agencia de marketing para profesionales de la salud.jpg — agency hero
-  - Assets/Images/google-ads-hero.jpg — Google Ads landing pages
+  - Assets/Images/google-ads-hero.webp — Google Ads landing pages
   - Assets/Images/google-ads-interface-6078ab3859a0f-scaled.webp — Google Ads UI
 - Fonts:
   - Assets/Fonts/MavenPro-Regular.ttf

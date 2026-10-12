@@ -339,7 +339,7 @@
         var ogType = document.getElementById('post-og-type');
         if (ogType) ogType.setAttribute('content', 'article');
 
-        var socialImage = String(post.social_image || post.hero_image || '').trim() || 'https://activomedical.com/Assets/Images/agencia%20de%20marketing%20para%20profesionales%20de%20la%20salud.jpg';
+        var socialImage = String(post.social_image || post.hero_image || '').trim() || 'https://activomedical.com/Assets/Images/medico-usando-tableta-digital-og-1200x630.webp';
 
         var ogImage = document.getElementById('post-og-image');
         if (ogImage) ogImage.setAttribute('content', socialImage);
