@@ -1863,3 +1863,40 @@
   .about-tj-photo { width: 140px; aspect-ratio: 1 / 1; border-radius: 50%; }
   .about-stat-row { gap: 1.5rem; flex-wrap: wrap; }
 }
+
+
+/* ---- Related links block (internal linking) ---- */
+.section-related-links { background: #f3f7fb; }
+.related-links h2 {
+  margin: 0 0 1.1rem;
+  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+  color: var(--c-navy);
+}
+.related-links-grid {
+  list-style: none; margin: 0 0 2.4rem; padding: 0;
+  display: grid; gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+.related-links-grid:last-child { margin-bottom: 0; }
+.related-links-grid a {
+  display: block; height: 100%;
+  padding: 1.1rem 1.25rem;
+  background: #fff;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  box-shadow: var(--sh-card);
+  color: var(--c-text);
+  text-decoration: none;
+  transition: transform .2s ease, border-color .2s ease;
+}
+.related-links-grid a:hover, .related-links-grid a:focus-visible { transform: translateY(-2px); border-color: var(--c-teal); }
+.related-links-grid strong { display: block; margin-bottom: .35rem; font-size: 1.02rem; line-height: 1.3; color: var(--c-navy); }
+.related-links-grid span { display: block; font-size: .9rem; line-height: 1.5; color: var(--c-text-light); }
+
+/* Inline links added to existing home sections */
+.specialty-name a { color: inherit; text-decoration: none; }
+.specialty-name a:hover, .specialty-name a:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+.about-coverage { margin-top: 1.2rem; }
+.about-coverage a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.chip-links { margin-top: auto; display: flex; flex-wrap: wrap; gap: .35rem 1.1rem; }
+.chip-links .chip-link { margin-top: 0; }

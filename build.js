@@ -151,8 +151,47 @@ async function convertImages() {
   console.log(`📝 HTML+JS updated (${htmlCount} files)`);
 }
 
+// ── 0. Bake the shared header/footer into every HTML file ────────────────────
+// js/shared-layout.js builds them in the browser, so crawlers that don't run
+// JavaScript saw no menu or footer links. Render the same markup at build time;
+// the script then finds no placeholder and only wires up behaviour.
+function inlineSharedLayout() {
+  const src = fs.readFileSync(path.join(__dirname, 'js', 'shared-layout.js'), 'utf8');
+  const grab = (name) => {
+    const start = src.indexOf('var ' + name + ' = [');
+    const end = src.indexOf("].join('');", start);
+    if (start < 0 || end < 0) throw new Error(name + ' not found');
+    return new Function(src.slice(start, end + "].join('');".length) + '; return ' + name + ';')();
+  };
+  let headerTpl, footerTpl;
+  try {
+    headerTpl = grab('headerTemplate');
+    footerTpl = grab('footerTemplate');
+  } catch (err) {
+    console.warn('⚠️  Shared layout not inlined:', err.message);
+    return;
+  }
+  const headerRe = /<div id="site-header-placeholder"(?:\s+data-mobile-nav-id="([^"]*)")?\s*><\/div>/;
+  const footerRe = /<div id="site-footer-placeholder"\s*><\/div>/;
+  let count = 0;
+  const walkHtml = (dir) => {
+    for (const name of fs.readdirSync(dir)) {
+      const full = path.join(dir, name);
+      if (fs.statSync(full).isDirectory()) { walkHtml(full); continue; }
+      if (!name.endsWith('.html')) continue;
+      const before = fs.readFileSync(full, 'utf8');
+      let html = before.replace(headerRe, (_m, id) => headerTpl.replace(/__MOBILE_NAV_ID__/g, id || 'mobile-nav'));
+      html = html.replace(footerRe, () => footerTpl);
+      if (html !== before) { fs.writeFileSync(full, html, 'utf8'); count++; }
+    }
+  };
+  walkHtml(DEST);
+  console.log(`🧭 Shared header/footer inlined (${count} files)`);
+}
+
 // Run async steps
 (async () => {
+  inlineSharedLayout();
   await minifyAllJs();
   await convertImages();
   await regenFavicon();

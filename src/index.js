@@ -285,7 +285,7 @@ async function fetchLivePost(slug, env, { fresh = false } = {}) {
  * before the response leaves the edge — so Facebook's crawler sees them
  * without needing to execute JavaScript.
  */
-function injectOgTags(htmlRes, post, slug) {
+function injectOgTags(htmlRes, post, slug, relatedPosts) {
   // No trailing slash: matches the sitemap and every internal link.
   const canonical = `${SITE_ORIGIN}/blog/${slug}`;
   const pageTitle = post.title
@@ -315,7 +315,11 @@ function injectOgTags(htmlRes, post, slug) {
     .on("#post-cat-tag",         { element(el) { if (post.raw) el.setInnerContent(String(post.raw.category || "")); } })
     .on("#post-title",           { element(el) { if (post.raw) el.setInnerContent(String(post.raw.title || post.title)); } })
     .on("#post-excerpt",         { element(el) { if (post.raw) el.setInnerContent(String(post.raw.excerpt || "")); } })
-    .on("#postArticle",          { element(el) { if (post.raw && post.raw.body_html) el.setInnerContent(`<div class="post-body">${post.raw.body_html}</div>`, { html: true }); } })
+    .on("#postArticle",          { element(el) {
+      if (post.raw && post.raw.body_html) el.setInnerContent(`<div class="post-body">${post.raw.body_html}</div>`, { html: true });
+      // Crawlable links to related posts (replaced by the page script once it renders the cards).
+      if (relatedPosts && relatedPosts.length) el.append(postLinksHtml(relatedPosts, "Artículos relacionados"), { html: true });
+    } })
     .on("#postBreadcrumbJsonLd", { element(el) {
       if (!post.raw) return;
       el.setInnerContent(safeJson({
@@ -329,7 +333,7 @@ function injectOgTags(htmlRes, post, slug) {
       }), { html: true });
     } })
     .on("#postSchemaJsonLd",     { element(el) { if (post.raw) el.setInnerContent(safeJson(articleSchema(post, canonical)), { html: true }); } })
-    .on("head",                  { element(el) { if (post.raw) el.append(`<script>window.__CMS_SSR_POST__=${safeJson(post.raw)};</script>`, { html: true }); } })
+    .on("head",                  { element(el) { if (post.raw) el.append(`<script>window.__CMS_SSR_POST__=${safeJson(relatedPosts ? { ...post.raw, related: relatedPosts.map(cardForRelated) } : post.raw)};</script>`, { html: true }); } })
     .transform(htmlRes);
 }
 
@@ -404,9 +408,140 @@ function authorSchema(name) {
   };
 }
 
+/** Shape the page script expects for each related post. */
+function cardForRelated(p) {
+  return {
+    slug: p.slug, title: p.title, excerpt: p.excerpt || "", category: p.category || "",
+    hero_image: p.hero_image || "", published_at: p.published_at || "",
+    author: { name: (p.author && p.author.name) || "", avatar: (p.author && p.author.avatar) || "" }
+  };
+}
+
 /** JSON safe to embed inside an inline <script>. */
 function safeJson(value) {
   return JSON.stringify(value).replace(/</g, "\\u003c");
+}
+
+/* ------------------------------------------------------------------------
+ * Post index + topical related posts (internal linking)
+ * ---------------------------------------------------------------------- */
+const STOPWORDS = new Set(("de la el los las un una unos unas y o u e en a al del por para con sin sobre entre que se su sus es son " +
+  "como mas pero si no lo le les ya muy tu tus mi mis nos te me este esta estos estas ese esa eso cuando donde quien cual cuales " +
+  "tiene tienen hacer hace puede pueden ser fue han hay vs the and for").split(" "));
+
+function tokens(text) {
+  return String(text || "")
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .toLowerCase().replace(/[^a-z0-9\s-]/g, " ").split(/[\s-]+/)
+    .filter((w) => w.length > 2 && !STOPWORDS.has(w));
+}
+
+let POST_INDEX = { at: 0, posts: null };
+
+/** All published posts from KV (newest first), cached briefly per isolate. */
+async function getAllPosts(env) {
+  const kv = env.POSTS_CACHE;
+  if (!kv) return [];
+  if (POST_INDEX.posts && Date.now() - POST_INDEX.at < 60000) return POST_INDEX.posts;
+  const names = [];
+  let cursor;
+  do {
+    const page = await kv.list({ prefix: KV_PREFIX, cursor });
+    page.keys.forEach((k) => names.push(k.name));
+    cursor = page.list_complete ? null : page.cursor;
+  } while (cursor);
+  const posts = (await Promise.all(names.map((n) => kv.get(n, "json").catch(() => null))))
+    .map((d) => (d ? parsePost(d) : null))
+    .filter((p) => p && !p.error && p.raw && p.raw.slug)
+    .map((p) => p.raw);
+  posts.sort((a, b) => String(b.published_at || "").localeCompare(String(a.published_at || "")));
+  POST_INDEX = { at: Date.now(), posts };
+  return posts;
+}
+
+/**
+ * Three related posts per post by topical overlap (title, tags, slug), with a
+ * penalty for posts that already have many inbound links so that every post
+ * ends up linked from somewhere. Deterministic: same input, same output.
+ */
+function assignRelated(posts) {
+  const docs = posts.map((p) => ({
+    slug: p.slug,
+    set: new Set([...tokens(p.title), ...tokens(p.slug), ...(p.tags || []).flatMap(tokens)])
+  }));
+  const df = new Map();
+  docs.forEach((d) => d.set.forEach((w) => df.set(w, (df.get(w) || 0) + 1)));
+  const idf = (w) => Math.log(1 + docs.length / (df.get(w) || 1));
+  const inbound = new Map(docs.map((d) => [d.slug, 0]));
+  const result = new Map();
+  [...docs].sort((a, b) => a.slug.localeCompare(b.slug)).forEach((d) => {
+    const scored = docs.filter((o) => o.slug !== d.slug).map((o) => {
+      let score = 0;
+      o.set.forEach((w) => { if (d.set.has(w)) score += idf(w); });
+      return { slug: o.slug, score: score - 0.6 * inbound.get(o.slug) };
+    }).sort((a, b) => b.score - a.score || a.slug.localeCompare(b.slug));
+    const pick = scored.slice(0, 3).map((x) => x.slug);
+    pick.forEach((slug) => inbound.set(slug, inbound.get(slug) + 1));
+    result.set(d.slug, pick);
+  });
+
+  // Repair pass: a post nobody picked takes the slot of the weakest pick of the
+  // most similar post, as long as that slot's target stays linked at least once.
+  const sim = (a, b) => { let t = 0; a.set.forEach((w) => { if (b.set.has(w)) t += idf(w); }); return t; };
+  const bySlugDoc = new Map(docs.map((d) => [d.slug, d]));
+  for (const orphan of docs.filter((d) => inbound.get(d.slug) === 0)) {
+    const candidates = docs.filter((d) => d.slug !== orphan.slug)
+      .sort((a, b) => sim(b, orphan) - sim(a, orphan) || a.slug.localeCompare(b.slug));
+    for (const src of candidates) {
+      const picks = result.get(src.slug);
+      const weakest = [...picks].sort((x, y) => sim(src, bySlugDoc.get(x)) - sim(src, bySlugDoc.get(y)))[0];
+      if (inbound.get(weakest) >= 2) {
+        picks[picks.indexOf(weakest)] = orphan.slug;
+        inbound.set(weakest, inbound.get(weakest) - 1);
+        inbound.set(orphan.slug, 1);
+        break;
+      }
+    }
+  }
+  return result;
+}
+
+const SR_ONLY = "position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0";
+
+function escHtml(v) {
+  return String(v == null ? "" : v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+/** Plain list of post links for crawlers (visually hidden; the page script replaces it). */
+function postLinksHtml(posts, heading) {
+  if (!posts.length) return "";
+  return `<div style="${SR_ONLY}"><h2>${escHtml(heading)}</h2><ul>` +
+    posts.map((p) => `<li><a href="/blog/${escHtml(p.slug)}">${escHtml(p.title)}</a> - ${escHtml(p.excerpt || "")}</li>`).join("") +
+    "</ul></div>";
+}
+
+/** Blog index: put every post's link in the HTML (the grid itself is filled by JS). */
+async function renderBlogIndex(htmlRes, env) {
+  const posts = await getAllPosts(env).catch(() => []);
+  if (!posts.length) return htmlRes;
+  const html = postLinksHtml(posts, "Todos los artículos del blog");
+  return new HTMLRewriter()
+    .on("#blogGrid", { element(el) { el.append(html, { html: true }); } })
+    .transform(htmlRes);
+}
+
+/** llms.txt = static file + one line per published post. */
+async function handleLlmsTxt(request, env) {
+  const base = await env.ASSETS.fetch(new URL("/llms.txt", request.url));
+  if (!base.ok || !env.POSTS_CACHE) return base;
+  const posts = await getAllPosts(env).catch(() => []);
+  if (!posts.length) return base;
+  let txt = await base.text();
+  const section = "## Artículos del Blog\n\n" + posts.map((p) =>
+    `- [${p.title}](${SITE_ORIGIN}/blog/${p.slug}): ${String(p.excerpt || p.meta_description || "").replace(/\s+/g, " ").trim()}`
+  ).join("\n") + "\n\n";
+  txt = txt.includes("## Canales de Atención") ? txt.replace("## Canales de Atención", section + "## Canales de Atención") : txt + "\n" + section;
+  return new Response(txt, { headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=300" } });
 }
 
 /**
@@ -537,7 +672,12 @@ export default {
 
       // Blog listing
       if (path === "/blog" || path === "/blog/") {
-        return withUtf8Html(await assets.fetch(url.origin + "/blog/blog/index.html"));
+        const index = withUtf8Html(await assets.fetch(url.origin + "/blog/blog/index.html"));
+        return renderBlogIndex(index, env);
+      }
+
+      if (path === "/llms.txt") {
+        return handleLlmsTxt(request, env);
       }
 
       // Blog article slug: /blog/<slug> or /blog/<slug>/ — single segment, no file extension
@@ -574,7 +714,14 @@ export default {
           headers.set("x-ssr-reason", (post && post.error) || "unknown");
           return new Response(shell.body, { status: 503, headers });
         }
-        const ok = withUtf8Html(injectOgTags(htmlRes, post, slug));
+        let relatedPosts = null;
+        try {
+          const all = await getAllPosts(env);
+          const bySlug = new Map(all.map((p) => [p.slug, p]));
+          const picks = assignRelated(all).get(slug);
+          if (picks) relatedPosts = picks.map((x) => bySlug.get(x)).filter(Boolean);
+        } catch (_) {}
+        const ok = withUtf8Html(injectOgTags(htmlRes, post, slug, relatedPosts));
         const okHeaders = new Headers(ok.headers);
         okHeaders.set("x-ssr", "hit");
         return new Response(ok.body, { status: ok.status, headers: okHeaders });
