@@ -530,6 +530,16 @@ async function renderBlogIndex(htmlRes, env) {
     .transform(htmlRes);
 }
 
+/** Home page: link the three newest posts in the HTML (the cards are filled by JS). */
+async function renderHome(htmlRes, env) {
+  const posts = (await getAllPosts(env).catch(() => [])).slice(0, 3);
+  if (!posts.length) return htmlRes;
+  const html = postLinksHtml(posts, "Artículos recientes del blog");
+  return new HTMLRewriter()
+    .on("#homeRecentPosts", { element(el) { el.append(html, { html: true }); } })
+    .transform(htmlRes);
+}
+
 /** llms.txt = static file + one line per published post. */
 async function handleLlmsTxt(request, env) {
   const base = await env.ASSETS.fetch(new URL("/llms.txt", request.url));
@@ -674,6 +684,10 @@ export default {
       if (path === "/blog" || path === "/blog/") {
         const index = withUtf8Html(await assets.fetch(url.origin + "/blog/blog/index.html"));
         return renderBlogIndex(index, env);
+      }
+
+      if (path === "/") {
+        return renderHome(withUtf8Html(await assets.fetch(request)), env);
       }
 
       if (path === "/llms.txt") {
