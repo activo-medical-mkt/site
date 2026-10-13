@@ -566,6 +566,7 @@ const PAGE_ARTICLES = {
   "/marketing-medico-tijuana/google-ads-medicos/": ["por-que-mis-anuncios-de-marketing-digital-no-funcionan", "recibes-muchos-mensajes-pero-pocos-agendan", "atraer-pacientes-estados-unidos-consultorio-tijuana"],
   "/marketing-medico-tijuana/": ["marketing-para-doctores-tijuana", "turismo-medico-tijuana-atraer-pacientes", "que-tipo-de-marketing-le-conviene-a-tu-consultorio"],
   "/marketing-medico-tijuana/paginas-web-para-medicos/": ["marketing-medico-y-manejo-de-datos-sensibles", "conviene-invertir-en-doctoralia-y-top-doctors", "como-navegan-pacientes-clinicas-tijuana-marketing-medico"],
+  "/seo-aeo-para-medicos/": ["que-es-aeo-inteligencia-artificial-recomiende-consultorio-medico", "cuanto-tarda-en-dar-resultados-el-marketing-digital-medico", "conviene-invertir-en-doctoralia-y-top-doctors"],
   "/marketing-medico-tijuana/seo-para-medicos/": ["seo-medico-tijuana-atraer-pacientes-google", "que-es-aeo-inteligencia-artificial-recomiende-consultorio-medico", "cuanto-tarda-en-dar-resultados-el-marketing-digital-medico"]
 };
 

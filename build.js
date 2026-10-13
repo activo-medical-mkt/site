@@ -11,7 +11,7 @@ const EXCLUDE = new Set([
   '.git', '.gitignore', '.wranglerignore', '.wrangler',
   'node_modules', 'public', 'build.js', 'wrangler.jsonc',
   'design.md', 'generate-sitemap.ps1', 'submit-indexnow.ps1',
-  'lib', 'src', '_redirects',
+  'lib', 'src', '_redirects', 'docs',
   '.env', '.env.local', '.env.production',
   'package.json', 'package-lock.json',
   // internal working files: never ship these
